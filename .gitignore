@@ -1,0 +1,8 @@
+Build/
+Podfile
+Podfile.lock
+mmReader.xcodeproj
+mmReader.xcworkspace
+mmReaderTests/
+mmReaderUITests/
+.DS_Store

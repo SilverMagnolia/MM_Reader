@@ -1,0 +1,6 @@
+framework module Pods_mmReader {
+  umbrella header "Pods-mmReader-umbrella.h"
+
+  export *
+  module * { export * }
+}

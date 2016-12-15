@@ -1,0 +1,52 @@
+PODS:
+  - AEXML (4.0.0)
+  - Alamofire (4.2.0)
+  - FolioReaderKit (0.9.4):
+    - AEXML (= 4.0)
+    - FontBlaster (= 3.0.0)
+    - JSQWebViewController (~> 5.0)
+    - MenuItemKit (= 2.0)
+    - RealmSwift (~> 1.0)
+    - SSZipArchive (= 1.5)
+    - ZFDragableModalTransition (~> 0.6)
+  - FontBlaster (3.0.0)
+  - JSQWebViewController (5.0.0)
+  - MenuItemKit (2.0)
+  - Realm (1.1.0):
+    - Realm/Headers (= 1.1.0)
+  - Realm/Headers (1.1.0)
+  - RealmSwift (1.1.0):
+    - Realm (= 1.1.0)
+  - SSZipArchive (1.5)
+  - ZFDragableModalTransition (0.6)
+
+DEPENDENCIES:
+  - AEXML
+  - Alamofire (~> 4.0)
+  - FolioReaderKit (from `https://github.com/FolioReader/FolioReaderKit.git`, branch `swift3`)
+
+EXTERNAL SOURCES:
+  FolioReaderKit:
+    :branch: swift3
+    :git: https://github.com/FolioReader/FolioReaderKit.git
+
+CHECKOUT OPTIONS:
+  FolioReaderKit:
+    :commit: ca08de9a36094acdc55796f3c0a842bf44db18d8
+    :git: https://github.com/FolioReader/FolioReaderKit.git
+
+SPEC CHECKSUMS:
+  AEXML: 6fc6433aa35bdc15dd8eb8d54eb7aa4520a010eb
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  FolioReaderKit: 600a04088ebaf0613c6681692aa65f477fe85a5c
+  FontBlaster: 0f4a3e2f965968e2dfc3f7f5cec7214c3f3b2f07
+  JSQWebViewController: 0461aa42612b221571556df61d9c09f080cb2eef
+  MenuItemKit: 9af69953dc983803ee85230e205fadbac0f26213
+  Realm: ceecf1a4540c4ce9efe196fe73fa9855bce05bd8
+  RealmSwift: 838058b2db95b12cb86bd0cf209df642c33fb60a
+  SSZipArchive: 29daace2bccb90a47de2837744da397728ff9207
+  ZFDragableModalTransition: 0d294eaaba6edfcb9839595de765f9ca06a4b524
+
+PODFILE CHECKSUM: e67b7366277f829b21cece2709a6c3a7a02c7fe6
+
+COCOAPODS: 1.1.0.rc.3
