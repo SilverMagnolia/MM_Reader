@@ -12,7 +12,7 @@ import FolioReaderKit
 import AEXML
 import SSZipArchive
 
-fileprivate struct CompactInformationOfBook {
+internal struct CompactInformationOfBook {
     var title: String?
     var authors: [String]?
     var publicationDate: String?
@@ -97,6 +97,8 @@ class MyLibraryController: UITableViewController, SSZipArchiveDelegate {
         
         // set path of content.opf
         let opfPath: String! = (unzipPath as NSString).appending("/OEBPS/content.opf")
+        
+        print("\nopfPath: \(opfPath)")
         
         // open opf file
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: opfPath))

@@ -20,7 +20,7 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="115"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" tableViewCell="yK2-dn-PDQ" id="BDA-OK-U8s">
-                                    <frame key="frameInset" width="375" height="114"/>
+                                    <frame key="frameInset" width="375" height="114.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="DrJ-qB-wL7" userLabel="OuterStackView">
@@ -91,7 +91,7 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="112"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Zq1-2v-nk7" id="ohu-jB-a8N">
-                                    <frame key="frameInset" width="375" height="111"/>
+                                    <frame key="frameInset" width="375" height="111.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="11" translatesAutoresizingMaskIntoConstraints="NO" id="AcH-2v-8Ys" userLabel="OuterStackView">
@@ -213,7 +213,7 @@
         <!--Full List Navigation-->
         <scene sceneID="eLI-YM-rxj">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ktp-8T-okQ" userLabel="Full List Navigation" customClass="FullListNavigationController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ktp-8T-okQ" userLabel="Full List Navigation" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="전체목록" id="iJg-17-HH6"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="cQ3-JX-11u">
