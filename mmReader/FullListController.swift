@@ -9,18 +9,32 @@
 import Foundation
 import Alamofire
 
+fileprivate struct BookInformation {
+    var title: String?
+    var authors: String?
+    var publicationDate: String?
+    var cover: UIImage?
+    
+    init(_ title: String, _ authors: String, _ date: String, _ cover: UIImage) {
+        self.title = title
+        self.authors = authors
+        self.publicationDate = date
+        self.cover = cover
+    }
+}
+
 class FullListController: UITableViewController, URLSessionDelegate{
     
-    
-    private var numOfBooks:Int = 0
+    private var numOfBooks:Int!
     private let url: URL! = URL(string: "http://166.104.222.60")
     private var unableToNetworkView = UIView()
     private var indicatorView = UIView()
     private var activityIndicator = UIActivityIndicatorView()
-    private var compactBookInfo = [CompactInformationOfBook]()
+    private var compactBookInfo : [BookInformation]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        compactBookInfo = [BookInformation]()
     }
     
     private func showActivityIndicatorView() {
@@ -48,117 +62,131 @@ class FullListController: UITableViewController, URLSessionDelegate{
         indicatorView.removeFromSuperview()
     }
     
-    
-    private func checkConnectionToServer() -> Data?{
+    private func createBookInformation() {
         
-        func sendRequest(request: URLRequest) -> Data? {
-            let session = URLSession.shared
-            var dataReceived: Data = Data ()
-            let sem = DispatchSemaphore(value: 0)
+        var bookInfo = [[String : String]]()
+        var coverImages = [[String : String]]()
+        
+        let dispatchGroup = DispatchGroup()
+        let queue = DispatchQueue(label: "com.dispatchGroup", attributes: .concurrent, target: .main)
+        
+        //request json to server
+        dispatchGroup.enter()
+        queue.async(group: dispatchGroup) {
             
-            let task = session.dataTask(with: request) {
-                (data, response, error) in
-                if error != nil{
-                    print("Error -> \(error)")
-                    return
-                }
-                
-                dataReceived = data!
-                sem.signal()
-            }
-            task.resume()
-            
-            // This line will wait until the semaphore has been signaled
-            // which will be once the data task has completed
-            sem.wait(timeout: .distantFuture)
-            return dataReceived
-        }
-        
-        return sendRequest(request: URLRequest(url: self.url.appendingPathComponent("/init.php")))
-    }
-    
-    private func createCompactInformationOfBooks() {
-        // create book's information by requsting to server.
-        
-        var bookInfo = [[String:String]]()
-        var coverImages = [UIImage]()
-        
-        var sem = DispatchSemaphore(value: 0)
-        
-        // request json to server
-        var urlRequest = self.url.appendingPathComponent("/phptest.php")
-        Alamofire.request(urlRequest).responseJSON {
-            
-            response in switch response.result {
-            
-            case .success :
-                print("\n\ngetting json data from server succeeded.\n\n")
-   
-                if let json = response.result.value,
-                    let jsonConvertedToArr = json as? [[String:String]]
-                {
-                    
-                    bookInfo = jsonConvertedToArr
-                    sem.signal()
-                    
-                    /* debug
-                    for obj in bookInfo{
-                        
-                        if let title = obj["title"]{
-                            print("\(title)")
-                        }
-                        
-                        if let authors = obj["authors"]{
-                            print("\(authors)")
-                        }
-                        
-                        if let date = obj["date"]{
-                            print("\(date)")
-                        }
-                    }
-                    */
-                    
-                }
-                break
-            default :
-                print("default")
-            }
-        }
-        sem.wait(timeout: .distantFuture)
-        
-        
-        sem = DispatchSemaphore(value: self.numOfBooks-1)
-        // request cover images to server
-        for i in 0...(self.numOfBooks-1){
-            
-            urlRequest = self.url.appendingPathComponent("/\(bookInfo[i]["title"]).jpg")
-            Alamofire.request(urlRequest).responseData {
+            let urlRequest = self.url.appendingPathComponent("/phptest.php")
+            Alamofire.request(urlRequest).responseJSON {
                 response in
+                    switch response.result {
+                        
+                    case .success :
+                        print("\n\ngetting json data from server succeeded.\n\n")
+                        
+                        if let json = response.result.value,
+                            let jsonConverted = json as? [[String:String]]
+                        {
+                            bookInfo = jsonConverted
+                            
+                            for obj in bookInfo{
+                                
+                                if let title = obj["title"]{
+                                    print("\(title)")
+                                }
+                                
+                                if let authors = obj["authors"]{
+                                    print("\(authors)")
+                                }
+                                
+                                if let date = obj["date"]{
+                                    print("\(date)")
+                                }
+                            }
+                        } // end if
+                        
+                    case .failure :
+                        print("error")
+                } // end switch
+                dispatchGroup.leave()
+            } // end closure
+        }
+
+        // request cover images to server
+        dispatchGroup.enter()
+        queue.async(group: dispatchGroup) {
+            
+            let urlRequest = self.url.appendingPathComponent("/requestImages.php")
+            
+            Alamofire.request(urlRequest).responseJSON {
+                response in
+                    switch response.result {
+            
+                    case .success :
+                        
+                        if let json = response.result.value,
+                            let jsonConverted = json as? [[String:String]]
+                        {
+                            coverImages = jsonConverted
+                        } // end if
+                        
+                        break
+                        
+                    case .failure:
+                        
+                        break
+                } //end switch
+                dispatchGroup.leave()
+            } // end closure
+        }
+        
+        //make book informations to be shown on view
+        dispatchGroup.notify(queue: DispatchQueue.main, execute: {
+            
+            // get book info from Array
+            for book in bookInfo {
                 
-                if let data = response.result.value,
-                    let cover = UIImage(data: data){
-                    coverImages.append(cover)
-                    sem.signal()
+                var img : UIImage!
+                var isFound = false
+                
+                // get element from cover array
+                for covers in coverImages {
+                    
+                    // get key
+                    for key in covers.keys {
+                        
+                        if book["title"] == key,
+                            let imgData = Data(base64Encoded: covers[key]!, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)
+                        {
+                            img = UIImage(data: imgData)
+                            isFound = true
+                            break
+                        } // end if
+                    } // end 3rd for
+                    
+                    if isFound { break }
+                    
+                } // end 2nd for
+                
+                if !isFound {
+                    img = UIImage(named: "smile")
                 }
                 
-            }
-        }
-        sem.wait(timeout: .distantFuture)
-        
-        // make book informations to be shown on view
-        for i in 0...(self.numOfBooks-1) {
-            var tempStrArr = [String]()
-            tempStrArr.append(bookInfo[i]["authors"] ?? "")
+                let book = BookInformation(book["title"] ?? "",
+                                           book["authors"] ?? "",
+                                           book["date"] ?? "",
+                                           img)
+                self.compactBookInfo.append(book)
+                
+            } // end 1st for
+            self.didLoadBookInfoFromServer()
             
-            let book = CompactInformationOfBook(bookInfo[i]["title"] ?? "",
-                                                tempStrArr,
-                                                bookInfo[i]["date"] ?? "",
-                                                coverImages[i], "")
-         
-            self.compactBookInfo.append(book)
-        }
+        }) // end closure
     }
     
+    private func didLoadBookInfoFromServer() {
+        self.numOfBooks = self.compactBookInfo.count
+        self.hideIndicatorView()
+        self.tableView.reloadData()
+    }
     
     private func showUnableToNetworkView() {
         let label = UILabel()
@@ -199,9 +227,10 @@ class FullListController: UITableViewController, URLSessionDelegate{
     }
     
     @objc private func refreshButtonSelected(_ sender : AnyObject) {
-        
         unableToNetworkView.removeFromSuperview()
+        showActivityIndicatorView()
         self.tableView.separatorStyle = .singleLine
+        viewDidAppear(false)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -226,58 +255,40 @@ class FullListController: UITableViewController, URLSessionDelegate{
         cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cell.title.text = self.compactBookInfo[row].title
         
-        //set author
-        var authors: String! = ""
+        // set authors
         cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
-        
-        for author in (self.compactBookInfo[row].authors)! {
-            authors.append(author)
-            authors.append(" ")
-        }
-        
-        cell.authors.text =  authors
-        
+        cell.authors.text = self.compactBookInfo[row].authors
+
         //set date
         cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cell.publicationDate.text = self.compactBookInfo[row].publicationDate
         
         //set cover image
         cell.coverImage.image = self.compactBookInfo[row].cover
-
-        
         return cell
  
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        // waiting for loading data from server.
-        showActivityIndicatorView()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        /** set the delay in which how long activity indicator will show on view.
-         if needed, set the constant number.
-         */
-        /*
-         let when = DispatchTime.now() + 3
-         DispatchQueue.main.asyncAfter(deadline: when) {
-         self.self.hideIndicatorView()
-         self.showUnableToNetworkView()
-         }
-         */
-        
-        if let data = checkConnectionToServer(), let str = String(data: data, encoding: String.Encoding.utf8), let numOfBooks = Int(str){
-            
-            print("\n\nnumOfBooks: \(numOfBooks)\n\n")
-            self.numOfBooks = numOfBooks
-            createCompactInformationOfBooks()
-            hideIndicatorView()
+        // check device's network status.
+        if Reachability.connectedToNetwork() {
+            createBookInformation()
         } else {
             showUnableToNetworkView()
         }
-
     }
     
-    /*
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // clear table view's cells at each time it is viewed.
+        self.numOfBooks = 0
+        if compactBookInfo.count > 0 {
+            self.compactBookInfo.removeAll()
+            self.tableView.reloadData()
+        }
+        showActivityIndicatorView()
     }
-    */
 }

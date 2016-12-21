@@ -12,7 +12,7 @@ import FolioReaderKit
 import AEXML
 import SSZipArchive
 
-internal struct CompactInformationOfBook {
+fileprivate struct CompactInformationOfBook {
     var title: String?
     var authors: [String]?
     var publicationDate: String?
