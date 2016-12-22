@@ -27,14 +27,53 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     private var numOfBooks:Int!
     private let url: URL! = URL(string: "http://166.104.222.60")
-    private var unableToNetworkView = UIView()
+    private var unableToNetworkView : UIView?
     private var indicatorView = UIView()
     private var activityIndicator = UIActivityIndicatorView()
     private var compactBookInfo : [BookInformation]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        compactBookInfo = [BookInformation]()
+        self.compactBookInfo = [BookInformation]()
+        self.numOfBooks = 0
+        /**
+        the selected current view is FullListTableView when app is from inactive to active status.
+        it should be checked to connect networking and, according to current status,
+        update table view cell or show overray view again.
+        */
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(FullListController.didBecomeActive),
+                                               name: NSNotification.Name(rawValue: "didBecomeActiveOnFullList"),
+                                               object: nil)
+    }
+    
+    func didBecomeActive(){
+        
+        if Reachability.connectedToNetwork() {
+            
+            if unableToNetworkView != nil {
+                hideUnableToNetworkView()
+            }
+            clearAndReloadData()
+            
+        } else if self.unableToNetworkView == nil {
+            
+            showUnableToNetworkView()
+            
+        }
+    }
+    
+    private func clearAndReloadData() {
+        
+        showActivityIndicatorView()
+        
+        if self.compactBookInfo.count > 0 {
+            self.numOfBooks = 0
+            self.compactBookInfo.removeAll()
+            self.tableView.reloadData()
+        }
+        
+        createBookInformation()
     }
     
     private func showActivityIndicatorView() {
@@ -50,7 +89,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         activityIndicator.activityIndicatorViewStyle = .whiteLarge
         activityIndicator.center = CGPoint(x: indicatorView.bounds.width / 2, y: indicatorView.bounds.height / 2 - 40)
-
         indicatorView.addSubview(activityIndicator)
         
         self.view.addSubview(indicatorView)
@@ -63,6 +101,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
     }
     
     private func createBookInformation() {
+        
+        /** 이 메소드 실행 중 네트워크 에러 발생하면 원인에 따라 적절한 팝업 메시지와 에러 처리 해야 함. */
         
         var bookInfo = [[String : String]]()
         var coverImages = [[String : String]]()
@@ -177,12 +217,16 @@ class FullListController: UITableViewController, URLSessionDelegate{
                 self.compactBookInfo.append(book)
                 
             } // end 1st for
-            self.didLoadBookInfoFromServer()
+            self.completedToLoadAllDataFromServer()
             
         }) // end closure
     }
     
-    private func didLoadBookInfoFromServer() {
+    
+    /**
+     called when all request to server is completely responded.
+     */
+    private func completedToLoadAllDataFromServer() {
         self.numOfBooks = self.compactBookInfo.count
         self.hideIndicatorView()
         self.tableView.reloadData()
@@ -192,9 +236,11 @@ class FullListController: UITableViewController, URLSessionDelegate{
         let label = UILabel()
         let button = UIButton()
         
-        unableToNetworkView.frame = self.view.frame
-        unableToNetworkView.backgroundColor = UIColor.white
-        unableToNetworkView.center = self.view.center
+        self.unableToNetworkView = UIView()
+        unableToNetworkView?.frame = self.view.frame
+        unableToNetworkView?.backgroundColor = UIColor.white
+        unableToNetworkView?.center = self.view.center
+        
         
         label.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -204,30 +250,41 @@ class FullListController: UITableViewController, URLSessionDelegate{
         button.backgroundColor = UIColor.black
         button.addTarget(self, action: #selector(refreshButtonSelected(_:)), for: .touchUpInside)
         
-        unableToNetworkView.addSubview(label)
-        unableToNetworkView.addSubview(button)
+        unableToNetworkView?.addSubview(label)
+        unableToNetworkView?.addSubview(button)
         
         // constraint to label
         var constraint =
             NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerY, multiplier: 1.0, constant: -100)
-        unableToNetworkView.addConstraint(constraint)
+        unableToNetworkView?.addConstraint(constraint)
         
         constraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerX, multiplier: 1.0, constant: 0)
-        unableToNetworkView.addConstraint(constraint)
+        unableToNetworkView?.addConstraint(constraint)
         
         // constraint to button
         constraint = NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerX, multiplier: 1.0, constant: 0)
-        unableToNetworkView.addConstraint(constraint)
+        unableToNetworkView?.addConstraint(constraint)
         
         constraint = NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: label, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 20)
-        unableToNetworkView.addConstraint(constraint)
+        unableToNetworkView?.addConstraint(constraint)
         
         self.tableView.separatorStyle = .none
-        self.view.addSubview(unableToNetworkView)
+        self.view.addSubview((unableToNetworkView)!)
+    }
+    
+    private func hideUnableToNetworkView() {
+        self.unableToNetworkView!.removeFromSuperview()
+        self.unableToNetworkView = nil
+        self.tableView.separatorStyle = .singleLine
     }
     
     @objc private func refreshButtonSelected(_ sender : AnyObject) {
-        unableToNetworkView.removeFromSuperview()
+        
+        if let view = unableToNetworkView {
+            view.removeFromSuperview()
+            self.unableToNetworkView = nil
+        }
+        
         showActivityIndicatorView()
         self.tableView.separatorStyle = .singleLine
         viewDidAppear(false)
@@ -273,22 +330,27 @@ class FullListController: UITableViewController, URLSessionDelegate{
         super.viewDidAppear(animated)
         
         // check device's network status.
+        
+        didBecomeActive()
+        
+        /*
         if Reachability.connectedToNetwork() {
             createBookInformation()
         } else {
             showUnableToNetworkView()
-        }
+        }*/
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        /*
         // clear table view's cells at each time it is viewed.
         self.numOfBooks = 0
         if compactBookInfo.count > 0 {
             self.compactBookInfo.removeAll()
             self.tableView.reloadData()
         }
-        showActivityIndicatorView()
+ */
+        //showActivityIndicatorView()
     }
 }
