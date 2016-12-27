@@ -9,12 +9,22 @@
 import UIKit
 import Alamofire
 
+fileprivate struct C {
+    struct CellHeight {
+        static let close: CGFloat = 40.0
+        static let open : CGFloat = 139.0
+    }
+}
+
 class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
 
-    private let baseURL         = "166.104.222.60/epub"
+    private let baseURL         = "http:166.104.222.60/epub"
     private let cellID          = "DetailViewCell"
     private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     
+    private var kRowsCount      = 0
+    private var cellHeights     = [CGFloat]()
+
     @IBOutlet weak var tableView            : UITableView!
     @IBOutlet weak var coverImageView       : UIImageView!
     @IBOutlet weak var titleLabel           : UILabel!
@@ -23,9 +33,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
     @IBOutlet weak var emptyLabel           : UILabel!
     @IBOutlet weak var navigationBar        : UINavigationItem!
     
-    var cover       : UIImage?
-    var titleStr    : String?
-    var editorsStr  : String?
+    var cover               : UIImage?
+    var titleStr            : String?
+    var editorsStr          : String?
     var publicationDateStr  : String?
     
     override func viewDidLoad() {
@@ -42,13 +52,15 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         if( Reachability.connectedToNetwork() ){
             
+            print("zzzzzzzz")
+            self.kRowsCount = 3
+            createCellHeightsArray()
             self.tableView.reloadData()
             
         } else {
@@ -65,15 +77,21 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
         
     }
     
-    private func getDataFromServer() {
-    
-    
+    func createCellHeightsArray() {
+        for _ in 0...kRowsCount {
+            cellHeights.append(C.CellHeight.close)
+        }
     }
     
-    
     /**
-     set cells of table view
+     set folding cells of table view
     */
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeights[indexPath.row]
+    }
+
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -81,22 +99,73 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 3
+        return kRowsCount
     }
     
+    // set folding cell config
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard case let cell as FoldingCell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+    
+        var duration = 0.0
+        if cellHeights[indexPath.row] == C.CellHeight.close { // open cell
+            cellHeights[indexPath.row] = C.CellHeight.open
+            cell.selectedAnimation(true, animated: true, completion: nil)
+            duration = 0.5
+        } else {// close cell
+            cellHeights[indexPath.row] = C.CellHeight.close
+            cell.selectedAnimation(false, animated: true, completion: nil)
+            duration = 1.1
+        }
+        
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: { _ in
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        }, completion: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if case let cell as FoldingCell = cell {
+            if cellHeights[indexPath.row] == C.CellHeight.close {
+                cell.selectedAnimation(false, animated: false, completion:nil)
+            } else {
+                cell.selectedAnimation(true, animated: false, completion: nil)
+            }
+        }
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        /*
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! DetailViewCell
         let row = indexPath.row
         
         cell.title.text = self.cellTitleArr[row]
         
-        if let url = makeURL(row) {
-            cell.webView.loadRequest(URLRequest(url: url))
+        if let urlStr = makeURL(row : row),
+            let urlInst = URL(string: urlStr) {
+            
+            let request = URLRequest(url: urlInst)
+            cell.content.loadRequest(request)
         }
-        */
-        //return cell
+        
+        return cell
+    }
+    
+    private func makeURL(row : Int) -> String? {
+        
+        // make baseUrl/title/title_xx.html
+        var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
+        title = title?.replacingOccurrences(of: "호", with: "")
+        
+        var url = "\(self.baseURL)" + "/" + "\(title!)" + "/" + "\(title!)" + "_" +
+            "\(self.cellTitleArr[row])" + ".html"
+        
+        // encoding url
+        url = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+        
+        return url
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

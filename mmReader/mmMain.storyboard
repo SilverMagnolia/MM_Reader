@@ -214,16 +214,90 @@
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="84" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MUj-Dp-MV8">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="203" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MUj-Dp-MV8">
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DetailViewCell" rowHeight="84" id="sVX-4y-oJb" customClass="DetailViewCell" customModule="mmReader" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="343" height="84"/>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DetailViewCell" rowHeight="203" id="sVX-4y-oJb" customClass="DetailViewCell" customModule="mmReader" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="28" width="343" height="203"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sVX-4y-oJb" id="dJb-cl-w3s">
-                                                    <frame key="frameInset" width="343" height="83.5"/>
+                                                    <frame key="frameInset" width="343" height="202.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AT9-J2-nHP" customClass="RotatedView" customModule="mmReader" customModuleProvider="target">
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4a-M2-BEg">
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="155" id="GKe-Bk-TO9"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstItem="X4a-M2-BEg" firstAttribute="leading" secondItem="AT9-J2-nHP" secondAttribute="leading" constant="12" id="FNg-NZ-BS3"/>
+                                                                <constraint firstItem="X4a-M2-BEg" firstAttribute="top" secondItem="AT9-J2-nHP" secondAttribute="top" constant="8" id="Hc6-R9-9zB"/>
+                                                                <constraint firstAttribute="height" constant="50" id="NYZ-Hf-3AV"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QaJ-mx-74t">
+                                                            <subviews>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KPQ-zf-bew" userLabel="webview" customClass="RotatedView" customModule="mmReader" customModuleProvider="target">
+                                                                    <subviews>
+                                                                        <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X7Q-nn-K2U">
+                                                                            <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        </webView>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstItem="X7Q-nn-K2U" firstAttribute="leading" secondItem="KPQ-zf-bew" secondAttribute="leading" id="2uB-KZ-iGt"/>
+                                                                        <constraint firstItem="X7Q-nn-K2U" firstAttribute="top" secondItem="KPQ-zf-bew" secondAttribute="top" id="9gU-jt-885"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="X7Q-nn-K2U" secondAttribute="bottom" id="9lj-7g-cVy"/>
+                                                                        <constraint firstAttribute="height" constant="120" id="j9Y-J9-wUC"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="X7Q-nn-K2U" secondAttribute="trailing" id="nBu-Nv-1QP"/>
+                                                                    </constraints>
+                                                                </view>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fmy-ck-W09" userLabel="lowerview" customClass="RotatedView" customModule="mmReader" customModuleProvider="target">
+                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                </view>
+                                                            </subviews>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="fmy-ck-W09" secondAttribute="trailing" id="3OM-eC-pkV"/>
+                                                                <constraint firstItem="fmy-ck-W09" firstAttribute="leading" secondItem="QaJ-mx-74t" secondAttribute="leading" id="FAK-jj-wBT"/>
+                                                                <constraint firstAttribute="bottom" secondItem="KPQ-zf-bew" secondAttribute="bottom" constant="20" id="KCr-UG-pfR"/>
+                                                                <constraint firstItem="KPQ-zf-bew" firstAttribute="top" secondItem="QaJ-mx-74t" secondAttribute="top" constant="8" id="ZLJ-Ue-cty"/>
+                                                                <constraint firstAttribute="bottom" secondItem="fmy-ck-W09" secondAttribute="bottom" id="c4D-tw-zzp"/>
+                                                                <constraint firstAttribute="trailing" secondItem="KPQ-zf-bew" secondAttribute="trailing" id="eCO-xn-yAK"/>
+                                                                <constraint firstItem="fmy-ck-W09" firstAttribute="top" secondItem="KPQ-zf-bew" secondAttribute="bottom" id="gCy-rm-Hue"/>
+                                                                <constraint firstItem="KPQ-zf-bew" firstAttribute="leading" secondItem="QaJ-mx-74t" secondAttribute="leading" id="sYF-SU-Sbq"/>
+                                                            </constraints>
+                                                        </view>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="AT9-J2-nHP" secondAttribute="trailing" id="2le-KH-7ou"/>
+                                                        <constraint firstItem="QaJ-mx-74t" firstAttribute="top" secondItem="dJb-cl-w3s" secondAttribute="topMargin" constant="80" id="80K-h7-bm8"/>
+                                                        <constraint firstItem="QaJ-mx-74t" firstAttribute="leading" secondItem="dJb-cl-w3s" secondAttribute="leading" constant="8" id="anp-iR-5YV"/>
+                                                        <constraint firstItem="AT9-J2-nHP" firstAttribute="top" secondItem="dJb-cl-w3s" secondAttribute="top" constant="5" id="bJr-88-Z2Z"/>
+                                                        <constraint firstAttribute="trailing" secondItem="QaJ-mx-74t" secondAttribute="trailing" constant="8" id="uvL-p9-BIo"/>
+                                                        <constraint firstItem="AT9-J2-nHP" firstAttribute="leading" secondItem="dJb-cl-w3s" secondAttribute="leading" id="xTk-gc-a0v"/>
+                                                    </constraints>
                                                 </tableViewCellContentView>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="itemCount">
+                                                        <integer key="value" value="3"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <outlet property="containerView" destination="QaJ-mx-74t" id="wQc-TJ-5Cx"/>
+                                                    <outlet property="containerViewTop" destination="80K-h7-bm8" id="Nzw-RO-GOI"/>
+                                                    <outlet property="content" destination="X7Q-nn-K2U" id="RLk-6i-LAV"/>
+                                                    <outlet property="foregroundView" destination="AT9-J2-nHP" id="y0H-a2-hL0"/>
+                                                    <outlet property="foregroundViewTop" destination="bJr-88-Z2Z" id="WnW-2s-SnS"/>
+                                                    <outlet property="title" destination="X4a-M2-BEg" id="uiF-MZ-0GR"/>
+                                                </connections>
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
@@ -354,7 +428,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FgO-Ih-gwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="278" y="-42"/>
+            <point key="canvasLocation" x="278" y="-15"/>
         </scene>
     </scenes>
     <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
