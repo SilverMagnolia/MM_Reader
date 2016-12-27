@@ -25,17 +25,22 @@ fileprivate struct BookInformation {
 
 class FullListController: UITableViewController, URLSessionDelegate{
     
-    private var numOfBooks:Int!
-    private let url: URL! = URL(string: "http://166.104.222.60")
+    private let serverIP = "http://166.104.222.60"
+    
+    private var url                 : URL!
+    private var numOfBooks          : Int!
+    private var indicatorView       : ActivityIndicatorView!
+    private var compactBookInfo     : [BookInformation]!
     private var unableToNetworkView : UIView?
-    private var indicatorView = UIView()
-    private var activityIndicator = UIActivityIndicatorView()
-    private var compactBookInfo : [BookInformation]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.compactBookInfo = [BookInformation]()
+        
+        self.url = URL(string: self.serverIP)
         self.numOfBooks = 0
+        self.indicatorView = ActivityIndicatorView(frame: self.view.frame)
+        self.compactBookInfo = [BookInformation]()
+
         /**
         the selected current view is FullListTableView when app is from inactive to active status.
         it should be checked to connect networking and, according to current status,
@@ -46,6 +51,52 @@ class FullListController: UITableViewController, URLSessionDelegate{
                                                name: NSNotification.Name(rawValue: "didBecomeActiveOnFullList"),
                                                object: nil)
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        didBecomeActive()
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return self.numOfBooks
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FullListCell", for: indexPath) as! FullListCell
+        let row = indexPath.row
+        
+        // set title
+        cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.title.text = self.compactBookInfo[row].title
+        
+        // set authors
+        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.authors.text = self.compactBookInfo[row].authors
+        
+        //set date
+        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.publicationDate.text = self.compactBookInfo[row].publicationDate
+        
+        //set cover image
+        cell.coverImage.image = self.compactBookInfo[row].cover
+        
+        return cell
+    }
+    
     
     func didBecomeActive(){
         
@@ -59,9 +110,9 @@ class FullListController: UITableViewController, URLSessionDelegate{
         } else if self.unableToNetworkView == nil {
             
             showUnableToNetworkView()
-            
         }
     }
+    
     
     private func clearAndReloadData() {
         
@@ -76,29 +127,35 @@ class FullListController: UITableViewController, URLSessionDelegate{
         createBookInformation()
     }
     
+    
     private func showActivityIndicatorView() {
-
-        // set indicator view
-        indicatorView.frame = self.view.frame
-        indicatorView.backgroundColor = UIColor.lightGray
-        indicatorView.center = self.view.center
-        indicatorView.clipsToBounds = true
-        indicatorView.alpha = 0.8
-        
-        // set activity indicator
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-        activityIndicator.activityIndicatorViewStyle = .whiteLarge
-        activityIndicator.center = CGPoint(x: indicatorView.bounds.width / 2, y: indicatorView.bounds.height / 2 - 40)
-        indicatorView.addSubview(activityIndicator)
-        
-        self.view.addSubview(indicatorView)
-        activityIndicator.startAnimating()
+        self.view.addSubview(self.indicatorView)
+        self.indicatorView.startAnimating()
     }
     
-    private func hideIndicatorView() {
-        activityIndicator.stopAnimating()
-        indicatorView.removeFromSuperview()
+    
+    private func hideActivityIndicatorView() {
+        self.indicatorView.stopAnimating()
+        self.indicatorView.removeFromSuperview()
     }
+    
+    
+    private func showUnableToNetworkView() {
+        
+        self.unableToNetworkView = UnableToNetworkView(frame: self.view.frame)
+        self.unableToNetworkView?.center = self.view.center
+        self.tableView.separatorStyle = .none
+        self.view.addSubview((unableToNetworkView)!)
+    }
+    
+    
+    private func hideUnableToNetworkView() {
+        
+        self.unableToNetworkView!.removeFromSuperview()
+        self.unableToNetworkView = nil
+        self.tableView.separatorStyle = .singleLine
+    }
+    
     
     private func createBookInformation() {
         
@@ -217,7 +274,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
                 self.compactBookInfo.append(book)
                 
             } // end 1st for
-            self.completedToLoadAllDataFromServer()
+            self.didCompleteToLoadAllDataFromServer()
             
         }) // end closure
     }
@@ -226,57 +283,14 @@ class FullListController: UITableViewController, URLSessionDelegate{
     /**
      called when all request to server is completely responded.
      */
-    private func completedToLoadAllDataFromServer() {
+    private func didCompleteToLoadAllDataFromServer() {
+        
         self.numOfBooks = self.compactBookInfo.count
-        self.hideIndicatorView()
+        self.hideActivityIndicatorView()
         self.tableView.reloadData()
+        
     }
     
-    private func showUnableToNetworkView() {
-        let label = UILabel()
-        let button = UIButton()
-        
-        self.unableToNetworkView = UIView()
-        unableToNetworkView?.frame = self.view.frame
-        unableToNetworkView?.backgroundColor = UIColor.white
-        unableToNetworkView?.center = self.view.center
-        
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        label.text = "Try to connect to network"
-        button.setTitle("Refresh", for: .normal)
-        button.backgroundColor = UIColor.black
-        button.addTarget(self, action: #selector(refreshButtonSelected(_:)), for: .touchUpInside)
-        
-        unableToNetworkView?.addSubview(label)
-        unableToNetworkView?.addSubview(button)
-        
-        // constraint to label
-        var constraint =
-            NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerY, multiplier: 1.0, constant: -100)
-        unableToNetworkView?.addConstraint(constraint)
-        
-        constraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerX, multiplier: 1.0, constant: 0)
-        unableToNetworkView?.addConstraint(constraint)
-        
-        // constraint to button
-        constraint = NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: unableToNetworkView, attribute: NSLayoutAttribute.centerX, multiplier: 1.0, constant: 0)
-        unableToNetworkView?.addConstraint(constraint)
-        
-        constraint = NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: label, attribute: NSLayoutAttribute.bottom, multiplier: 1.0, constant: 20)
-        unableToNetworkView?.addConstraint(constraint)
-        
-        self.tableView.separatorStyle = .none
-        self.view.addSubview((unableToNetworkView)!)
-    }
-    
-    private func hideUnableToNetworkView() {
-        self.unableToNetworkView!.removeFromSuperview()
-        self.unableToNetworkView = nil
-        self.tableView.separatorStyle = .singleLine
-    }
     
     @objc private func refreshButtonSelected(_ sender : AnyObject) {
         
@@ -290,67 +304,43 @@ class FullListController: UITableViewController, URLSessionDelegate{
         viewDidAppear(false)
     }
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return self.numOfBooks
-    }
-    
-    
-    // view cells in table
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FullListCell", for: indexPath) as! FullListCell
-
-        // get the current row index of table view
-        let row = indexPath.row
-        
-        // set title
-        cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
-        cell.title.text = self.compactBookInfo[row].title
-        
-        // set authors
-        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
-        cell.authors.text = self.compactBookInfo[row].authors
-
-        //set date
-        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
-        cell.publicationDate.text = self.compactBookInfo[row].publicationDate
-        
-        //set cover image
-        cell.coverImage.image = self.compactBookInfo[row].cover
-        return cell
- 
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // check device's network status.
-        
-        didBecomeActive()
-        
-        /*
-        if Reachability.connectedToNetwork() {
-            createBookInformation()
-        } else {
-            showUnableToNetworkView()
-        }*/
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        /*
-        // clear table view's cells at each time it is viewed.
-        self.numOfBooks = 0
-        if compactBookInfo.count > 0 {
-            self.compactBookInfo.removeAll()
-            self.tableView.reloadData()
+        if segue.identifier == "ShowBookInfoDetails" {
+            let detailViewController = segue.destination as! BookInfoDetailViewController
+            
+            let indexPath = self.tableView.indexPathForSelectedRow!
+            let row = indexPath.row
+            
+            if let title = self.compactBookInfo[row].title{
+                detailViewController.titleStr = title
+            }
+            
+            if let editors = self.compactBookInfo[row].authors {
+                detailViewController.editorsStr = editors
+            }
+            
+            if let date = self.compactBookInfo[row].publicationDate {
+                detailViewController.publicationDateStr = date
+            }
+            
+            if let cover = self.compactBookInfo[row].cover {
+                detailViewController.cover = cover
+            }
         }
- */
-        //showActivityIndicatorView()
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
