@@ -221,7 +221,7 @@
                                                 <rect key="frame" x="0.0" y="28" width="343" height="203"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sVX-4y-oJb" id="dJb-cl-w3s">
-                                                    <frame key="frameInset" width="343" height="202.5"/>
+                                                    <frame key="frameInset" width="343" height="202"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AT9-J2-nHP" customClass="RotatedView" customModule="mmReader" customModuleProvider="target">
@@ -398,7 +398,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="pCA-v7-fZb" userLabel="My Labrary Navigation" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="내서재" id="wxe-ML-sRv"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="5G9-ej-16b">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="5G9-ej-16b">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -417,7 +417,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="전체목록" id="lPS-i3-Rcu"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="FPj-ex-4Id">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="FPj-ex-4Id">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

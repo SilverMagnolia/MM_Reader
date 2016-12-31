@@ -16,9 +16,12 @@ fileprivate struct C {
     }
 }
 
-class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
+class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
+                                    UITableViewDelegate, URLSessionDelegate
+{
 
-    private let baseURL         = "http:166.104.222.60/epub"
+    private let downloadPath    = ""
+    private let baseURL         = "http:166.104.222.60"
     private let cellID          = "DetailViewCell"
     private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     
@@ -37,6 +40,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
     var titleStr            : String?
     var editorsStr          : String?
     var publicationDateStr  : String?
+    var sessionID           : String?
     
     override func viewDidLoad() {
         
@@ -58,7 +62,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
         
         if( Reachability.connectedToNetwork() ){
             
-            print("zzzzzzzz")
             self.kRowsCount = 3
             createCellHeightsArray()
             self.tableView.reloadData()
@@ -74,9 +77,34 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     @IBAction func selectedDownloadButton(_ sender: AnyObject) {
-        
+        //let urlstring = self.baseURL + "/POST_download.php"
+        //self.sessionID = (NSUUID().uuidString)
+        /*
+        //let filepath = "Documents/local_teakettle"
+        if let url = URL(string: urlstring) {
+            var urlRequest = URLRequest(url: url)
+            
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = self.titleStr?.data(using: String.Encoding.utf8)
+            
+            let config = URLSessionConfiguration.background(withIdentifier: self.sessionID!)
+           // let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+            
+            let task = session.downloadTask(with: urlRequest)
+            task.resume()
+        }*/
     }
     
+    /*
+    func urlSession(session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingToURL location: URL) {
+        
+        var epubBasePath: String! = Bundle.main.path(forResource: nil, ofType: "epub", inDirectory: "epub source")
+        epubBasePath = (epubBasePath as NSString).deletingLastPathComponent
+        
+        try! FileManager.default.moveItem(atPath: location.path, toPath: self.downloadPath)
+    }*/
+
+
     func createCellHeightsArray() {
         for _ in 0...kRowsCount {
             cellHeights.append(C.CellHeight.close)
@@ -143,7 +171,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
         
         cell.title.text = self.cellTitleArr[row]
         
-        if let urlStr = makeURL(row : row),
+        if let urlStr = makeHtmlRequestURL(row : row),
             let urlInst = URL(string: urlStr) {
             
             let request = URLRequest(url: urlInst)
@@ -153,13 +181,13 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource, UIT
         return cell
     }
     
-    private func makeURL(row : Int) -> String? {
+    private func makeHtmlRequestURL(row : Int) -> String? {
         
         // make baseUrl/title/title_xx.html
         var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
         title = title?.replacingOccurrences(of: "호", with: "")
         
-        var url = "\(self.baseURL)" + "/" + "\(title!)" + "/" + "\(title!)" + "_" +
+        var url = "\(self.baseURL)" + "/" + "epub" + "/" + "\(title!)" + "/" + "\(title!)" + "_" +
             "\(self.cellTitleArr[row])" + ".html"
         
         // encoding url
