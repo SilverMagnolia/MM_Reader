@@ -204,8 +204,9 @@ class BookManager {
             }
             
             // set path of resource directory
-            coverPath = (unzipPath as NSString).appendingPathComponent("/OEBPS/")
-            
+            coverPath = (unzipPath as NSString).lastPathComponent
+            coverPath = "/"+coverPath!+"/OEBPS"
+
             // find path of cover image
             for item in xmlDoc.root["manifest"]["item"].all! {
                 
@@ -244,7 +245,10 @@ class BookManager {
             let title = rs?.string(forColumn: "title")
             let editors = rs?.string(forColumn: "editors")
             let date = rs?.string(forColumn: "publicationDate")
-            let cover = UIImage(contentsOfFile: (rs?.string(forColumn: "coverPath"))!)
+            //let imgURL = "\(self.appDocumentPath)"+"\(rs?.string(forColumn: "coverPath")!)"
+            
+            let imgURL = URL(string: self.appDocumentPath)?.appendingPathComponent((rs?.string(forColumn: "coverPath"))!)
+            let cover = UIImage(contentsOfFile: imgURL!.path)
             
             let bookInfo = CompactInformationOfBook(title!, editors!, date!, cover!)
             
