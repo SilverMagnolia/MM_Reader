@@ -9,20 +9,6 @@
 import Foundation
 import Alamofire
 
-fileprivate struct BookInformation {
-    var title: String?
-    var authors: String?
-    var publicationDate: String?
-    var cover: UIImage?
-    
-    init(_ title: String, _ authors: String, _ date: String, _ cover: UIImage) {
-        self.title = title
-        self.authors = authors
-        self.publicationDate = date
-        self.cover = cover
-    }
-}
-
 class FullListController: UITableViewController, URLSessionDelegate{
     
     private let serverIP = "http://166.104.222.60"
@@ -30,7 +16,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
     private var url                 : URL!
     private var numOfBooks          : Int!
     private var indicatorView       : ActivityIndicatorView!
-    private var compactBookInfo     : [BookInformation]!
+    private var compactBookInfo     : [CompactInformationOfBook]!
     private var unableToNetworkView : UIView?
     
     override func viewDidLoad() {
@@ -39,7 +25,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
         self.url = URL(string: self.serverIP)
         self.numOfBooks = 0
         self.indicatorView = ActivityIndicatorView(frame: self.view.frame)
-        self.compactBookInfo = [BookInformation]()
+        self.compactBookInfo = [CompactInformationOfBook]()
 
         /**
         the selected current view is FullListTableView when app is from inactive to active status.
@@ -124,7 +110,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
             self.tableView.reloadData()
         }
         
-        createBookInformation()
+        createCompactInformationOfBook()
     }
     
     
@@ -157,7 +143,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
     }
     
     
-    private func createBookInformation() {
+    private func createCompactInformationOfBook() {
         
         /** 이 메소드 실행 중 네트워크 에러 발생하면 원인에 따라 적절한 팝업 메시지와 에러 처리 해야 함. */
         
@@ -267,7 +253,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
                     img = UIImage(named: "smile")
                 }
                 
-                let book = BookInformation(book["title"] ?? "",
+                let book = CompactInformationOfBook(book["title"] ?? "",
                                            book["authors"] ?? "",
                                            book["date"] ?? "",
                                            img)

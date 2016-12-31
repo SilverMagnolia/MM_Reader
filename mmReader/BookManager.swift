@@ -12,6 +12,7 @@ import SSZipArchive
 import FMDB
 
 internal struct CompactInformationOfBook{
+    
     var title: String?
     var authors: String?
     var publicationDate: String?
@@ -36,10 +37,10 @@ internal struct CompactInformationOfBook{
 }
 
 class BookManager {
+    static var appDocumentPath         : String!
     
     private let dbFileName = "book_info.sqlite"
     
-    private var appDocumentPath         : String!
     private var epubBasePathInBundle    : String!
     private var dbPath                  : String!
     private var database                : FMDatabase!
@@ -47,13 +48,13 @@ class BookManager {
     init(){
         
         // initialize directory paths
-        self.appDocumentPath =
+        BookManager.appDocumentPath =
             FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].path
 
         self.epubBasePathInBundle = Bundle.main.path(forResource: nil, ofType: "epub", inDirectory: "epub source")
         self.epubBasePathInBundle = (epubBasePathInBundle as NSString).deletingLastPathComponent
         
-        self.dbPath = (self.appDocumentPath as NSString).appendingPathComponent(self.dbFileName)
+        self.dbPath = (BookManager.appDocumentPath as NSString).appendingPathComponent(self.dbFileName)
         
         // check if database file already exists in "/document",
         // then make the file and create table if not exist.
@@ -161,11 +162,13 @@ class BookManager {
         
         // set path
         let fullPathOfEpub: String! = (self.epubBasePathInBundle as NSString).appendingPathComponent(filename)
-        var unzipPath: String! = (self.appDocumentPath as NSString).appendingPathComponent(filename)
+        var unzipPath: String! = (BookManager.appDocumentPath as NSString).appendingPathComponent(filename)
         unzipPath = (unzipPath as NSString).deletingPathExtension
         
         // unzip epub to user document directory
-        SSZipArchive.unzipFile(atPath: fullPathOfEpub, toDestination: unzipPath, delegate: nil)
+        if !(unzip(atPath: fullPathOfEpub, toDestination: unzipPath)) {
+            print("\nunzip failed\n")
+        }
         
         // set path of content.opf
         let opfPath: String! = (unzipPath as NSString).appending("/OEBPS/content.opf")
@@ -234,6 +237,15 @@ class BookManager {
         return (title!, editors, date!, coverPath!)
     }
     
+    private func unzip(atPath fullPathOfEpub: String, toDestination unzipPath: String) -> Bool{
+        SSZipArchive.unzipFile(atPath: fullPathOfEpub, toDestination: unzipPath, delegate: nil)
+        
+        if FileManager.default.fileExists(atPath: unzipPath) {
+            return true
+        }
+        return false
+    }
+    
     internal func getBookInfoInDocument() -> [CompactInformationOfBook]{
         
         let statement = "select * from book_info"
@@ -247,7 +259,7 @@ class BookManager {
             let date = rs?.string(forColumn: "publicationDate")
             //let imgURL = "\(self.appDocumentPath)"+"\(rs?.string(forColumn: "coverPath")!)"
             
-            let imgURL = URL(string: self.appDocumentPath)?.appendingPathComponent((rs?.string(forColumn: "coverPath"))!)
+            let imgURL = URL(string: BookManager.appDocumentPath)?.appendingPathComponent((rs?.string(forColumn: "coverPath"))!)
             let cover = UIImage(contentsOfFile: imgURL!.path)
             
             let bookInfo = CompactInformationOfBook(title!, editors!, date!, cover!)
@@ -259,8 +271,34 @@ class BookManager {
     
     internal func getBookPath(with title: String) -> String {
         
-        let path = (self.appDocumentPath as NSString).appendingPathComponent(title)
+        let path = (BookManager.appDocumentPath as NSString).appendingPathComponent(title)
         return path
+    }
+    
+    internal func addNewEpubToDocument(at srcPath: String) -> Bool{
         
+        var epubDestPath = BookManager.appDocumentPath
+        var dirName = (srcPath as NSString).lastPathComponent
+        dirName = (dirName as NSString).deletingPathExtension
+        
+        epubDestPath = (epubDestPath! as NSString).appendingPathComponent(dirName)
+        
+        if(unzip(atPath: srcPath, toDestination: epubDestPath!)) {
+            
+            if let bookInfo = getBookInfo(dirName) {
+                
+                if !insertBookInfoToDB(title: bookInfo.title, editors: bookInfo.editors,
+                                       date: bookInfo.date, coverPath: bookInfo.coverPath) {
+                    
+                    print("failed to insert book infomation to DB")
+                    return false
+                    
+                } // END IF
+                return true
+                
+            } // END IF
+        } // END IF
+        
+        return false
     }
 }

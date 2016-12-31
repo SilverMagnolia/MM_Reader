@@ -19,8 +19,6 @@ fileprivate struct C {
 class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
                                     UITableViewDelegate, URLSessionDelegate
 {
-
-    private let downloadPath    = ""
     private let baseURL         = "http:166.104.222.60"
     private let cellID          = "DetailViewCell"
     private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
@@ -28,7 +26,10 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     private var kRowsCount      = 0
     private var cellHeights     = [CGFloat]()
 
+    // lower subview
     @IBOutlet weak var tableView            : UITableView!
+    
+    // upper subview
     @IBOutlet weak var coverImageView       : UIImageView!
     @IBOutlet weak var titleLabel           : UILabel!
     @IBOutlet weak var editorsLabel         : UILabel!
@@ -53,9 +54,11 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         self.editorsLabel.text          = self.editorsStr ?? "editors"
         self.publicationDateLabel.text  = self.publicationDateStr ?? "date"
         self.emptyLabel.text            = ""
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -69,6 +72,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         } else {
             // popup window
         }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -77,9 +81,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     }
     
     @IBAction func selectedDownloadButton(_ sender: AnyObject) {
-        //let urlstring = self.baseURL + "/POST_download.php"
-        //self.sessionID = (NSUUID().uuidString)
-        /*
+        let urlstring = self.baseURL + "/POST_download.php"
+        self.sessionID = (NSUUID().uuidString)
+        
         //let filepath = "Documents/local_teakettle"
         if let url = URL(string: urlstring) {
             var urlRequest = URLRequest(url: url)
@@ -88,22 +92,21 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             urlRequest.httpBody = self.titleStr?.data(using: String.Encoding.utf8)
             
             let config = URLSessionConfiguration.background(withIdentifier: self.sessionID!)
-           // let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+            let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
             
             let task = session.downloadTask(with: urlRequest)
             task.resume()
-        }*/
+        }
     }
     
-    /*
+    // completed to download epub
     func urlSession(session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingToURL location: URL) {
         
         var epubBasePath: String! = Bundle.main.path(forResource: nil, ofType: "epub", inDirectory: "epub source")
         epubBasePath = (epubBasePath as NSString).deletingLastPathComponent
         
-        try! FileManager.default.moveItem(atPath: location.path, toPath: self.downloadPath)
-    }*/
-
+        try! FileManager.default.moveItem(atPath: location.path, toPath: BookManager.appDocumentPath)
+    }
 
     func createCellHeightsArray() {
         for _ in 0...kRowsCount {
@@ -114,7 +117,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     /**
      set folding cells of table view
     */
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeights[indexPath.row]
     }
@@ -151,6 +153,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             tableView.beginUpdates()
             tableView.endUpdates()
         }, completion: nil)
+        
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
