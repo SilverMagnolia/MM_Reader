@@ -9,7 +9,7 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, URLSessionDelegate {
 
     var window: UIWindow?
     
@@ -52,6 +52,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    /*
+    func application(handleEventsForBackgroundURLSession
+        identifier: String, completionHandler:() -> Void) {
+        
+        let config = URLSessionConfiguration.background(withIdentifier: identifier)
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+        
+        session.getTasksWithCompletionHandler {
+            (dataTasks, uploadTasks, downloadTasks) -> Void in
+            // yay! you have your tasks!
+            
+            
+        }
+    
+    }*/
 
 
 }

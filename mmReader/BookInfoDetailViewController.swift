@@ -17,15 +17,17 @@ fileprivate struct C {
 }
 
 class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
-                                    UITableViewDelegate, URLSessionDelegate
+                                    UITableViewDelegate, URLSessionDownloadDelegate
 {
     private let baseURL         = "http:166.104.222.60"
     private let cellID          = "DetailViewCell"
+    private let sessionID       = "I am a batman"
     private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     
+    private var bookManager     = BookManager.shared
     private var kRowsCount      = 0
     private var cellHeights     = [CGFloat]()
-
+    
     // lower subview
     @IBOutlet weak var tableView            : UITableView!
     
@@ -41,7 +43,12 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     var titleStr            : String?
     var editorsStr          : String?
     var publicationDateStr  : String?
-    var sessionID           : String?
+    
+    lazy var downloadSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        return session
+    }()
     
     override func viewDidLoad() {
         
@@ -58,7 +65,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,7 +79,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         } else {
             // popup window
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -81,37 +87,52 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     }
     
     @IBAction func selectedDownloadButton(_ sender: AnyObject) {
-        let urlstring = self.baseURL + "/POST_download.php"
-        self.sessionID = (NSUUID().uuidString)
         
-        //let filepath = "Documents/local_teakettle"
+        var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
+        title = title?.replacingOccurrences(of: "호", with: "")
+        
+        var urlstring = self.baseURL + "/epub/"
+        urlstring = urlstring + title! + "/" + title! + ".epub"
+        
         if let url = URL(string: urlstring) {
-            var urlRequest = URLRequest(url: url)
+            let urlRequest = URLRequest(url: url)
             
-            urlRequest.httpMethod = "POST"
-            urlRequest.httpBody = self.titleStr?.data(using: String.Encoding.utf8)
-            
-            let config = URLSessionConfiguration.background(withIdentifier: self.sessionID!)
-            let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-            
-            let task = session.downloadTask(with: urlRequest)
+            let task = self.downloadSession.downloadTask(with: urlRequest)
             task.resume()
         }
     }
     
     // completed to download epub
-    func urlSession(session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingToURL location: URL) {
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
-        var epubBasePath: String! = Bundle.main.path(forResource: nil, ofType: "epub", inDirectory: "epub source")
-        epubBasePath = (epubBasePath as NSString).deletingLastPathComponent
+        print("finished downloading.")
         
-        try! FileManager.default.moveItem(atPath: location.path, toPath: BookManager.appDocumentPath)
+        if bookManager.addNewEpubToDocument(at: location.path, bookTitle: self.titleStr!) {
+            print("finished moving epub to sandbox")
+        } else {
+            print("failed to moving epub to sandbox")
+        }
     }
 
     func createCellHeightsArray() {
         for _ in 0...kRowsCount {
             cellHeights.append(C.CellHeight.close)
         }
+    }
+    
+    private func makeHtmlRequestURL(row : Int) -> String? {
+        
+        // make baseUrl/title/title_xx.html
+        var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
+        title = title?.replacingOccurrences(of: "호", with: "")
+        
+        var url = "\(self.baseURL)" + "/" + "epub" + "/" + "\(title!)" + "/" + "\(title!)" + "_" +
+            "\(self.cellTitleArr[row])" + ".html"
+        
+        // encoding url
+        url = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+        
+        return url
     }
     
     /**
@@ -184,20 +205,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         return cell
     }
     
-    private func makeHtmlRequestURL(row : Int) -> String? {
-        
-        // make baseUrl/title/title_xx.html
-        var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
-        title = title?.replacingOccurrences(of: "호", with: "")
-        
-        var url = "\(self.baseURL)" + "/" + "epub" + "/" + "\(title!)" + "/" + "\(title!)" + "_" +
-            "\(self.cellTitleArr[row])" + ".html"
-        
-        // encoding url
-        url = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
-        
-        return url
-    }
+
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

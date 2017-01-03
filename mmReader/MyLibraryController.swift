@@ -10,16 +10,14 @@ import UIKit
 import Foundation
 import FolioReaderKit
 
-class MyLibraryController: UITableViewController {
+class MyLibraryController: UITableViewController{
 
     private var compactInfoOfBooks = [CompactInformationOfBook]()
-    private var bookManager: BookManager!
-    private var isReloadNeeded = false
+    private let bookManager = BookManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.bookManager = BookManager()
         self.compactInfoOfBooks = self.bookManager.getBookInfoInDocument()
         
     }
@@ -28,13 +26,13 @@ class MyLibraryController: UITableViewController {
         super.viewWillAppear(animated)
        
         // if there is a new epub downloaded, then reload tableview cells.
-        if self.isReloadNeeded {
+        if bookManager.isThereANewEpub! {
             
             self.compactInfoOfBooks.removeAll()
             self.compactInfoOfBooks = self.bookManager.getBookInfoInDocument()
             self.tableView.reloadData()
             
-            self.isReloadNeeded = false
+            bookManager.isThereANewEpub = false
         }
         
     }
@@ -94,19 +92,4 @@ class MyLibraryController: UITableViewController {
         FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.compactInfoOfBooks[indexPath.row].title!)
             , andConfig: config, shouldRemoveEpub: false)
     }
-    
-    internal func addNewEpub(at srcPath: String) -> Bool {
-        
-        if bookManager.addNewEpubToDocument(at: srcPath) {
-            self.isReloadNeeded = true
-            
-            return true
-            
-        } else {
-            
-            return false
-            
-        }
-    }
-    
 }

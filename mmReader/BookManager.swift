@@ -11,6 +11,7 @@ import AEXML
 import SSZipArchive
 import FMDB
 
+
 internal struct CompactInformationOfBook{
     
     var title: String?
@@ -37,6 +38,8 @@ internal struct CompactInformationOfBook{
 }
 
 class BookManager {
+    
+    static let shared = BookManager()
     static var appDocumentPath         : String!
     
     private let dbFileName = "book_info.sqlite"
@@ -45,7 +48,11 @@ class BookManager {
     private var dbPath                  : String!
     private var database                : FMDatabase!
     
+    internal var isThereANewEpub        : Bool!
+    
     init(){
+        
+        self.isThereANewEpub = false
         
         // initialize directory paths
         BookManager.appDocumentPath =
@@ -275,17 +282,14 @@ class BookManager {
         return path
     }
     
-    internal func addNewEpubToDocument(at srcPath: String) -> Bool{
+    internal func addNewEpubToDocument(at srcPath: String, bookTitle: String) -> Bool{
         
         var epubDestPath = BookManager.appDocumentPath
-        var dirName = (srcPath as NSString).lastPathComponent
-        dirName = (dirName as NSString).deletingPathExtension
-        
-        epubDestPath = (epubDestPath! as NSString).appendingPathComponent(dirName)
+        epubDestPath = (epubDestPath! as NSString).appendingPathComponent(bookTitle)
         
         if(unzip(atPath: srcPath, toDestination: epubDestPath!)) {
             
-            if let bookInfo = getBookInfo(dirName) {
+            if let bookInfo = getBookInfo(bookTitle) {
                 
                 if !insertBookInfoToDB(title: bookInfo.title, editors: bookInfo.editors,
                                        date: bookInfo.date, coverPath: bookInfo.coverPath) {
@@ -294,6 +298,9 @@ class BookManager {
                     return false
                     
                 } // END IF
+                
+                self.isThereANewEpub = true
+                
                 return true
                 
             } // END IF
