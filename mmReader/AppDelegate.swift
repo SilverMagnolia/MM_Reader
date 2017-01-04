@@ -9,10 +9,10 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, URLSessionDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate{
 
     var window: UIWindow?
-    
+    var backgroundSessionCompletionHandler: (() -> Void)?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -53,21 +53,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, URLSessionDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    /*
-    func application(handleEventsForBackgroundURLSession
-        identifier: String, completionHandler:() -> Void) {
-        
-        let config = URLSessionConfiguration.background(withIdentifier: identifier)
-        let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
-        
-        session.getTasksWithCompletionHandler {
-            (dataTasks, uploadTasks, downloadTasks) -> Void in
-            // yay! you have your tasks!
-            
-            
-        }
     
-    }*/
+    func application(handleEventsForBackgroundURLSession
+        identifier: String, completionHandler: @escaping () -> Void) {
+        print("\nhandleEventsForBackgroundURLSession\n")
+        backgroundSessionCompletionHandler = completionHandler
+    
+    }
 
 
 }

@@ -15,6 +15,8 @@ class MyLibraryController: UITableViewController{
     private var compactInfoOfBooks = [CompactInformationOfBook]()
     private let bookManager = BookManager.shared
     
+    private var cellIndexToDelete: IndexPath?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,13 +28,13 @@ class MyLibraryController: UITableViewController{
         super.viewWillAppear(animated)
        
         // if there is a new epub downloaded, then reload tableview cells.
-        if bookManager.isThereANewEpub! {
+        if bookManager.isTableCellReloadNeeded! {
             
             self.compactInfoOfBooks.removeAll()
             self.compactInfoOfBooks = self.bookManager.getBookInfoInDocument()
             self.tableView.reloadData()
             
-            bookManager.isThereANewEpub = false
+            bookManager.isTableCellReloadNeeded = false
         }
         
     }
@@ -91,5 +93,61 @@ class MyLibraryController: UITableViewController{
         
         FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.compactInfoOfBooks[indexPath.row].title!)
             , andConfig: config, shouldRemoveEpub: false)
+    }
+    
+    
+    // swipe to delete a book
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            self.cellIndexToDelete = indexPath
+            
+            confirmDelete(bookTitle: self.compactInfoOfBooks[indexPath.row].title!)
+        }
+    }
+    
+    private func confirmDelete(bookTitle: String) {
+        
+        // create alert controller and action
+        let alert = UIAlertController(title: nil, message: "\(bookTitle)\n기기에서 완전히 삭제됩니다.", preferredStyle: .actionSheet)
+        
+        let DeleteAction = UIAlertAction(title: "삭제", style: .destructive) {
+            (alertAction) in
+            
+            if let indexPath = self.cellIndexToDelete{
+                
+                // save book title to be deleted temporarily.
+                let bookTitle = self.compactInfoOfBooks[indexPath.row].title!
+                
+                // update table view
+                self.tableView.beginUpdates()
+                
+                self.compactInfoOfBooks.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                self.cellIndexToDelete = nil
+                
+                self.tableView.endUpdates()
+                
+                // delete the book with the 'bookTitle' from document permanently.
+                if self.bookManager.deleteEpubInDocument(bookTitle: bookTitle){
+                    print("\ndeleted all data assotiated with \(bookTitle)\n")
+                } else {
+                    print("\nfailed to delete \(bookTitle)\n")
+                }
+            }
+        }
+        
+        let CancelAction = UIAlertAction(title: "취소", style: .cancel) {
+            (alertAction) in
+            self.cellIndexToDelete = nil
+        }
+        
+        alert.addAction(DeleteAction)
+        alert.addAction(CancelAction)
+
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }

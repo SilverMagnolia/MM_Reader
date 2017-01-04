@@ -21,12 +21,13 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
 {
     private let baseURL         = "http:166.104.222.60"
     private let cellID          = "DetailViewCell"
-    private let sessionID       = "I am a batman"
     private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     
     private var bookManager     = BookManager.shared
     private var kRowsCount      = 0
     private var cellHeights     = [CGFloat]()
+    
+    private let sessionID       = UUID().uuidString
     
     // lower subview
     @IBOutlet weak var tableView            : UITableView!
@@ -43,12 +44,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     var titleStr            : String?
     var editorsStr          : String?
     var publicationDateStr  : String?
-    
-    lazy var downloadSession: URLSession = {
-        let config = URLSessionConfiguration.default
-        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-        return session
-    }()
     
     override func viewDidLoad() {
         
@@ -97,7 +92,14 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         if let url = URL(string: urlstring) {
             let urlRequest = URLRequest(url: url)
             
-            let task = self.downloadSession.downloadTask(with: urlRequest)
+            let downloadSession: URLSession = {
+                let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
+                let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+                return session
+            }()
+            
+            
+            let task = downloadSession.downloadTask(with: urlRequest)
             task.resume()
         }
     }
@@ -210,6 +212,20 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
     }
-    
+}
 
+extension BookInfoDetailViewController: URLSessionDelegate {
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            
+            if let completionHandler = appDelegate.backgroundSessionCompletionHandler {
+                appDelegate.backgroundSessionCompletionHandler = nil
+                DispatchQueue.main.async(execute: {
+                    completionHandler()
+                })
+            }
+            
+        }
+    }
 }

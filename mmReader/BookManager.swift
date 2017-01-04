@@ -48,11 +48,11 @@ class BookManager {
     private var dbPath                  : String!
     private var database                : FMDatabase!
     
-    internal var isThereANewEpub        : Bool!
+    internal var isTableCellReloadNeeded        : Bool!
     
     init(){
         
-        self.isThereANewEpub = false
+        self.isTableCellReloadNeeded = false
         
         // initialize directory paths
         BookManager.appDocumentPath =
@@ -83,6 +83,8 @@ class BookManager {
             if !(openDB()) { print("\nfailed to open DB")}
             
         }
+        
+        showAllTupleInDB()
     }
     
     private func openDB() -> Bool{
@@ -299,13 +301,56 @@ class BookManager {
                     
                 } // END IF
                 
-                self.isThereANewEpub = true
-                
+                self.isTableCellReloadNeeded = true
+                showAllTupleInDB()
                 return true
                 
             } // END IF
         } // END IF
         
         return false
+    }
+    
+    private func showAllTupleInDB() {
+        
+        let rs = database.executeQuery("select * from book_info", withArgumentsIn: nil)
+        
+        while (rs?.next())! {
+            if let title = rs?.string(forColumn: "title"),
+                let editors = rs?.string(forColumn: "editors"),
+                let publicationDate = rs?.string(forColumn: "publicationDate"){
+                
+                print("\ntitle = \(title); \neditors = \(editors); \ndate = \(publicationDate)")
+            }
+        }
+    }
+    
+    internal func deleteEpubInDocument(bookTitle: String) -> Bool {
+    
+        // delete the book from user document
+        let bookPathTobeDeleted = (BookManager.appDocumentPath as NSString).appendingPathComponent(bookTitle)
+        
+        do {
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: bookPathTobeDeleted, isDirectory: true))
+            
+            print("\ndeleted \(bookTitle) from document\n")
+        } catch(let error){
+            print("\(error)")
+        }
+        
+        
+        // delete the book with 'bookTitle' from DB
+        let statement = "delete from book_info where title = ?"
+        var title = [String]()
+        title.append(bookTitle)
+    
+        if !self.database.executeUpdate(statement, withArgumentsIn: title) {
+            print(database.lastError())
+            return false
+        }
+        print("\ndeleted \(bookTitle) from DB\n")
+        
+        showAllTupleInDB()
+        return true
     }
 }
