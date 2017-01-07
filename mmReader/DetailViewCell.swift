@@ -35,6 +35,5 @@ class DetailViewCell: FoldingCell {
         // Drawing code
     }
     */
-
 }
 	

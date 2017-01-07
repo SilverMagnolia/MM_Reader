@@ -116,6 +116,15 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         }
     }
 
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        
+        print("\n")
+        print("bytesWritten: \(bytesWritten)")
+        print("totalBytesWritten: \(totalBytesWritten)")
+        print("totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+    }
+    
+    
     func createCellHeightsArray() {
         for _ in 0...kRowsCount {
             cellHeights.append(C.CellHeight.close)
@@ -206,8 +215,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         
         return cell
     }
-    
-
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

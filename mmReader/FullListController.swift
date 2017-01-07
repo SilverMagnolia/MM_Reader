@@ -136,7 +136,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     
     private func hideUnableToNetworkView() {
-        
         self.unableToNetworkView!.removeFromSuperview()
         self.unableToNetworkView = nil
         self.tableView.separatorStyle = .singleLine

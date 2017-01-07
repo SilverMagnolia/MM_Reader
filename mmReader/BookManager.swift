@@ -352,5 +352,6 @@ class BookManager {
         
         showAllTupleInDB()
         return true
+        
     }
 }
