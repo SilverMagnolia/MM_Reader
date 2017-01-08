@@ -199,14 +199,14 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbd-aI-sPz" userLabel="download">
-                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbd-aI-sPz" userLabel="download" customClass="DownloadProgressButton" customModule="mmReader" customModuleProvider="target">
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="47" id="gb2-We-wai"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                                 <state key="normal" title="Download">
                                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleShadowColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="selectedDownloadButton:" destination="c1B-TL-HHZ" eventType="touchUpInside" id="yPG-hI-lLH"/>
@@ -319,6 +319,7 @@
                     <navigationItem key="navigationItem" title="void" id="rsx-98-KVk"/>
                     <connections>
                         <outlet property="coverImageView" destination="1lg-sw-jlv" id="JDQ-we-byf"/>
+                        <outlet property="downloadButton" destination="Fbd-aI-sPz" id="wSJ-ns-Sc7"/>
                         <outlet property="editorsLabel" destination="WME-3P-RZs" id="KRc-cS-Lye"/>
                         <outlet property="emptyLabel" destination="28Z-zp-aER" id="hZ6-MI-0b4"/>
                         <outlet property="navigationBar" destination="rsx-98-KVk" id="hjn-uv-DjD"/>

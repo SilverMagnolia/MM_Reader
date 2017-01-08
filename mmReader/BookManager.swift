@@ -352,6 +352,18 @@ class BookManager {
         
         showAllTupleInDB()
         return true
+    }
+    
+    internal func checkIfTheBookExists(with title: String) -> Bool {
+        
+        let path = BookManager.appDocumentPath + "/" + "\(title)"
+        
+        if FileManager.default.fileExists(atPath: path) {
+            
+            return true
+        }
+        
+        return false
         
     }
 }

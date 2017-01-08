@@ -21,16 +21,22 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
 {
     private let baseURL         = "http:166.104.222.60"
     private let cellID          = "DetailViewCell"
-    private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     
+    private let buttonTextArr   = [
+                                    "beforeDownloading" : "Download",
+                                    "afterDownloading"  : "보기"
+                                  ]
+    
+    private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
     private var bookManager     = BookManager.shared
     private var kRowsCount      = 0
     private var cellHeights     = [CGFloat]()
+    private var bookExists      = false
     
     private let sessionID       = UUID().uuidString
-    
-    // lower subview
+
     @IBOutlet weak var tableView            : UITableView!
+    @IBOutlet weak var downloadButton       : DownloadProgressButton!
     
     // upper subview
     @IBOutlet weak var coverImageView       : UIImageView!
@@ -57,10 +63,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         self.publicationDateLabel.text  = self.publicationDateStr ?? "date"
         self.emptyLabel.text            = ""
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-
+        self.downloadButton.setTitle(buttonTextArr["beforeDownloading"], for: .normal)
+        self.downloadButton.backgroundColor = UIColor.lightGray
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -76,6 +81,18 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         }
     }
     
+    override func viewWillLayoutSubviews() {
+        
+        if bookManager.checkIfTheBookExists(with: self.titleStr!) {
+            
+            self.downloadButton.bookIsAlreadyDownloaded()
+            self.downloadButton.setTitle(buttonTextArr["afterDownloading"], for: .normal)
+            self.bookExists = true
+            
+        }
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -83,25 +100,51 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     
     @IBAction func selectedDownloadButton(_ sender: AnyObject) {
         
-        var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
-        title = title?.replacingOccurrences(of: "호", with: "")
+        /*
+         When the button is clicked, there are two options.
+         
+         First, if the book shown to this view has already downloaded and saved in user document,
+         it will be opened in the epub reader.
+         
+         Second, if the book shown to this view has not downloaded yet,
+         downloading the book will start and if successfully completed, 
+         the method saving the book will be called.
+         */
         
-        var urlstring = self.baseURL + "/epub/"
-        urlstring = urlstring + title! + "/" + title! + ".epub"
-        
-        if let url = URL(string: urlstring) {
-            let urlRequest = URLRequest(url: url)
+        if self.bookExists {
             
-            let downloadSession: URLSession = {
-                let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
-                let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-                return session
-            }()
+            let config = FolioReaderConfig()
             
+            config.shouldHideNavigationOnTap = true
+            config.scrollDirection = .horizontal
             
-            let task = downloadSession.downloadTask(with: urlRequest)
-            task.resume()
-        }
+            FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.titleStr!)
+                , andConfig: config, shouldRemoveEpub: false)
+            
+        } else {
+            
+            self.downloadButton.setColorToDownloadProgressArea(color: UIColor.brown.cgColor)
+            
+            var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
+            title = title?.replacingOccurrences(of: "호", with: "")
+            
+            var urlstring = self.baseURL + "/epub/"
+            urlstring = urlstring + title! + "/" + title! + ".epub"
+            
+            if let url = URL(string: urlstring) {
+                let urlRequest = URLRequest(url: url)
+                
+                let downloadSession: URLSession = {
+                    let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
+                    let session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
+                    return session
+                }()
+                
+                
+                let task = downloadSession.downloadTask(with: urlRequest)
+                task.resume()
+            }// END IF
+        } // END ELSE
     }
     
     // completed to download epub
@@ -110,7 +153,12 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         print("finished downloading.")
         
         if bookManager.addNewEpubToDocument(at: location.path, bookTitle: self.titleStr!) {
+            
+            self.downloadButton.setTitle("보기", for: .normal)
+            self.bookExists = true
+            
             print("finished moving epub to sandbox")
+        
         } else {
             print("failed to moving epub to sandbox")
         }
@@ -118,12 +166,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         
-        print("\n")
-        print("bytesWritten: \(bytesWritten)")
-        print("totalBytesWritten: \(totalBytesWritten)")
-        print("totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+        _ = self.downloadButton.setPortionOfDownloadProgressArea(totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+        
     }
-    
     
     func createCellHeightsArray() {
         for _ in 0...kRowsCount {
@@ -157,7 +202,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows

@@ -10,36 +10,35 @@ import UIKit
 
 internal class DownloadProgressButton: UIButton
 {
-    private var downloadProgressArea, normalArea: CALayer!
+    private var downloadProgressArea = CALayer()
+    private var normalArea = CALayer()
     private var portionOfDownloadProgressArea: CGFloat = 0.0
-    
+    private var downloadingMessage: String?
+    private var DBAreaColor: CGColor = UIColor.brown.cgColor
     
     override func draw(_ rect: CGRect) {
         
-        // set default
-        let (slice, remainder) = rect.divided(atDistance: self.bounds.size.width * self.portionOfDownloadProgressArea, from: .minXEdge)
-        
-        // create background layer
-        downloadProgressArea = CALayer()
-        normalArea = CALayer()
+        var eachPortion: (slice: CGRect, remainder: CGRect)!
+
+        // the portion of download progress area equals to zero by default
+        eachPortion = rect.divided(atDistance: self.bounds.size.width * self.portionOfDownloadProgressArea, from: .minXEdge)
         
         // assign portion of each layers
-        downloadProgressArea.frame = slice
-        normalArea.frame = remainder
+        downloadProgressArea.frame = eachPortion.0
+        normalArea.frame = eachPortion.1
         
-        // set colors to each layers
-        downloadProgressArea.backgroundColor = UIColor.darkGray.cgColor
-        normalArea.backgroundColor = UIColor.gray.cgColor
+        downloadProgressArea.backgroundColor = self.DBAreaColor
         
         // insert sublayers below self.layer
-        self.layer.insertSublayer(downloadProgressArea, below: self.layer)
-        self.layer.insertSublayer(normalArea, below: self.layer)
+        self.layer.insertSublayer(downloadProgressArea, below: self.titleLabel?.layer)
+        self.layer.insertSublayer(normalArea, below: self.titleLabel?.layer)
     }
-    
+
     /**
-     update portion of each areas
+     update portion of each areas and draw them.
     */
-    private func adjustPropertiesToSublayers() {
+    private func adjustPropertiesToSublayersDuringDownload() {
+        
         self.layoutIfNeeded()
         
         let (slice, remainder) =
@@ -48,39 +47,63 @@ internal class DownloadProgressButton: UIButton
         downloadProgressArea.frame = slice
         normalArea.frame = remainder
      
+        
+        if let message = self.downloadingMessage {
+            super.setTitle("\(message)", for: .normal)
+        } else {
+            super.setTitle("Downloading", for: .normal)
+        }
+        
         self.layoutIfNeeded()
+        
     }
     
-    internal func setPortionOfDownloadProgressArea(by portion: CGFloat) -> Bool{
+    private func calculatePercentage(lhs: Int64, rhs: Int64) -> CGFloat {
         
+        let dividend = CGFloat(lhs)
+        let divisor  = CGFloat(rhs)
+        let quotient = dividend/divisor
+        
+        return quotient
+    }
+    
+    internal func setPortionOfDownloadProgressArea(totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) -> Bool{
+        
+        // calculate percentage
+        let portion = calculatePercentage(lhs: totalBytesWritten, rhs: totalBytesExpectedToWrite)
+        
+        // check range of portion
         if portion > 1.0 || portion < 0  {
-            print("portion value must be smaller than 1 and grater than 0.")
+            print("Portion value must range from 0 to 100.\ncurrent portion: \(portion)")
             
             return false
         }
         
         self.portionOfDownloadProgressArea = portion
-        adjustPropertiesToSublayers()
+        adjustPropertiesToSublayersDuringDownload()
         
         return true
     }
     
+    internal func bookIsAlreadyDownloaded() {
+        self.portionOfDownloadProgressArea = 100
+    }
+    
+    /**
+     set color to each areas
+    */
     internal func setColorToDownloadProgressArea(color: CGColor) {
-        
-        self.layoutIfNeeded()
         self.downloadProgressArea.backgroundColor = color
-        self.layoutIfNeeded()
-        
     }
-    
-    internal func setColorTonormalArea(color: CGColor) {
-        
-        self.layoutIfNeeded()
-        self.normalArea.backgroundColor = color
-        self.layoutIfNeeded()
-        
+
+    /**
+     set custom text on the button while downloading.
+     default is "Downloading."
+     */
+    internal func setMessageDuringDownload(string message: String) {
+        super.titleLabel?.text = message
     }
-    
+
 }
 
 
