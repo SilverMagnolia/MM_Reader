@@ -26,19 +26,29 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
                                     "beforeDownloading" : "Download",
                                     "afterDownloading"  : "보기"
                                   ]
-    
-    private var cellTitleArr    = ["여는글", "목차", "편집위원소개"]
-    private var bookManager     = BookManager.shared
-    private var kRowsCount      = 0
-    private var cellHeights     = [CGFloat]()
-    private var bookExists      = false
-    
     private let sessionID       = UUID().uuidString
-
-    @IBOutlet weak var tableView            : UITableView!
-    @IBOutlet weak var downloadButton       : DownloadProgressButton!
     
-    // upper subview
+    private var cellTitleArr        = ["여는글", "목차", "편집위원소개"]
+    private var bookManager         = BookManager.shared
+    private var kRowsCount          = 0
+    private var cellHeights         = [CGFloat]()
+    private var bookExists          = false
+    private var isNetworkConnected  = false
+    
+    private lazy var popup: UnableToNetworkPopupView = {
+        return UnableToNetworkPopupView(frame: self.view.frame)
+     
+    }()
+    
+    private lazy var confirmPopup: ConfirmMesssagePopupView = {
+        return ConfirmMesssagePopupView(frame: self.view.frame)
+    }()
+    
+    // for lower stack view
+    @IBOutlet weak var tableView            : UITableView!
+    
+    // properties of upper stack view
+    @IBOutlet weak var downloadButton       : DownloadProgressButton!
     @IBOutlet weak var coverImageView       : UIImageView!
     @IBOutlet weak var titleLabel           : UILabel!
     @IBOutlet weak var editorsLabel         : UILabel!
@@ -50,6 +60,10 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     var titleStr            : String?
     var editorsStr          : String?
     var publicationDateStr  : String?
+    
+    private lazy var reachability: Reachability? = Reachability.shared
+    private var downloadTask: URLSessionDownloadTask?
+    private var isDownloadInProgress = false
     
     override func viewDidLoad() {
         
@@ -66,19 +80,50 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         self.downloadButton.setTitle(buttonTextArr["beforeDownloading"], for: .normal)
         self.downloadButton.backgroundColor = UIColor.lightGray
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(BookInfoDetailViewController.reachabilityDidchange(_:)),
+                                               name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName),
+                                               object: nil)
+        _ = reachability?.startNotifier()
+        
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
-        if( Reachability.connectedToNetwork() ){
+        super.viewWillAppear(animated)
+        checkReachability()
+        
+    }
+    
+    func checkReachability() {
+        
+        guard let r = reachability else { return }
+        
+        if r.isReachable  {
+            
+            // reachable
+            print("connected to network")
             
             self.kRowsCount = 3
             createCellHeightsArray()
             self.tableView.reloadData()
+            self.isNetworkConnected = true
             
         } else {
-            // popup window
+            
+            // unreachable
+            self.isNetworkConnected = false
+            showPopup()
         }
+    }
+    
+    func reachabilityDidchange(_ notification: Notification){
+        checkReachability()
+    }
+    
+    private func showPopup() {
+        popup.center = self.view.center
+        self.view.addSubview(popup)
     }
     
     override func viewWillLayoutSubviews() {
@@ -88,9 +133,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             self.downloadButton.bookIsAlreadyDownloaded()
             self.downloadButton.setTitle(buttonTextArr["afterDownloading"], for: .normal)
             self.bookExists = true
-            
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -111,40 +154,88 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
          the method saving the book will be called.
          */
         
-        if self.bookExists {
+        if isDownloadInProgress {
             
-            let config = FolioReaderConfig()
+            self.confirmPopup.center = self.view.center
             
-            config.shouldHideNavigationOnTap = true
-            config.scrollDirection = .horizontal
+            confirmPopup.addConrimAction {
+                
+                if self.isDownloadInProgress {
+                    
+                    self.downloadTask?.cancel()
+                    self.downloadTask = nil
+                
+                    self.downloadButton.downloadCanceled()
+                    self.isDownloadInProgress = false
+                    self.downloadButton.setTitle(self.buttonTextArr["beforeDownloading"], for: .normal)
+                }
+                
+                self.confirmPopup.removeFromSuperview()
+            }
             
-            FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.titleStr!)
-                , andConfig: config, shouldRemoveEpub: false)
+            confirmPopup.addCancelAction {
+                
+                self.confirmPopup.removeFromSuperview()
+            }
+            
+            self.view.addSubview(confirmPopup)
+            
+            
+            
+        } else if self.isNetworkConnected {
+            
+            if self.bookExists {
+            
+                // the book already exists.
+            
+                let config = FolioReaderConfig()
+            
+                config.shouldHideNavigationOnTap = true
+                config.scrollDirection = .horizontal
+            
+                FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.titleStr!)
+                    , andConfig: config, shouldRemoveEpub: false)
+                
+            
+            } else {
+            
+                // the book will be downloaded
+                self.downloadButton.setColorToDownloadProgressArea(color: UIColor.brown.cgColor)
+            
+                var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
+                title = title?.replacingOccurrences(of: "호", with: "")
+            
+                var urlstring = self.baseURL + "/epub/"
+                urlstring = urlstring + title! + "/" + title! + ".epub"
+            
+                if let url = URL(string: urlstring) {
+                
+                    let urlRequest = URLRequest(url: url)
+                
+                    let downloadSession: URLSession = {
+                        let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
+                        let session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
+                        return session
+                    }()
+                
+                    self.downloadTask = downloadSession.downloadTask(with: urlRequest)
+                    self.downloadTask?.resume()
+                    self.isDownloadInProgress = true
+                
+                }// END IF
+            } // END ELSE
             
         } else {
             
-            self.downloadButton.setColorToDownloadProgressArea(color: UIColor.brown.cgColor)
+            showPopup()
             
-            var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
-            title = title?.replacingOccurrences(of: "호", with: "")
-            
-            var urlstring = self.baseURL + "/epub/"
-            urlstring = urlstring + title! + "/" + title! + ".epub"
-            
-            if let url = URL(string: urlstring) {
-                let urlRequest = URLRequest(url: url)
-                
-                let downloadSession: URLSession = {
-                    let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
-                    let session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
-                    return session
-                }()
-                
-                
-                let task = downloadSession.downloadTask(with: urlRequest)
-                task.resume()
-            }// END IF
-        } // END ELSE
+        }
+    }
+    
+    // during download
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        
+        _ = self.downloadButton.setPortionOfDownloadProgressArea(totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
     }
     
     // completed to download epub
@@ -155,7 +246,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         if bookManager.addNewEpubToDocument(at: location.path, bookTitle: self.titleStr!) {
             
             self.downloadButton.setTitle("보기", for: .normal)
+            
             self.bookExists = true
+            self.isDownloadInProgress = false
             
             print("finished moving epub to sandbox")
         
@@ -163,19 +256,13 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             print("failed to moving epub to sandbox")
         }
     }
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        
-        _ = self.downloadButton.setPortionOfDownloadProgressArea(totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
-        
-    }
     
-    func createCellHeightsArray() {
-        for _ in 0...kRowsCount {
-            cellHeights.append(C.CellHeight.close)
-        }
-    }
     
+    /**
+     MARK: The methods below are for table view.
+    */
+    
+    // Make url request for contents of folding cell
     private func makeHtmlRequestURL(row : Int) -> String? {
         
         // make baseUrl/title/title_xx.html
@@ -191,24 +278,32 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         return url
     }
     
-    /**
-     set folding cells of table view
-    */
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath.row]
+    // To initiate folding cell
+    func createCellHeightsArray() {
+        for _ in 0...kRowsCount {
+            cellHeights.append(C.CellHeight.close)
+        }
     }
-
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
+    
+    
+    //set folding cells of table view
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeights[indexPath.row]
+    }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return kRowsCount
     }
     
-    // set folding cell config
+    
+    // set folding cell configuration
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard case let cell as FoldingCell = tableView.cellForRow(at: indexPath) else {
             return
@@ -219,7 +314,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             cellHeights[indexPath.row] = C.CellHeight.open
             cell.selectedAnimation(true, animated: true, completion: nil)
             duration = 0.5
-        } else {// close cell
+        } else {
+            
+            // close cell
             cellHeights[indexPath.row] = C.CellHeight.close
             cell.selectedAnimation(false, animated: true, completion: nil)
             duration = 1.1
@@ -229,8 +326,8 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             tableView.beginUpdates()
             tableView.endUpdates()
         }, completion: nil)
-        
     }
+    
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
@@ -242,6 +339,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             }
         }
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -259,10 +357,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         
         return cell
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-    }
 }
 
 extension BookInfoDetailViewController: URLSessionDelegate {
@@ -276,7 +370,6 @@ extension BookInfoDetailViewController: URLSessionDelegate {
                     completionHandler()
                 })
             }
-            
         }
     }
 }

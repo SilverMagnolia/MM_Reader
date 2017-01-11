@@ -19,6 +19,13 @@ class FullListController: UITableViewController, URLSessionDelegate{
     private var compactBookInfo     : [CompactInformationOfBook]!
     private var unableToNetworkView : UIView?
     
+    private lazy var reachability: Reachability? = Reachability.shared
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        reachability?.stopNotifier()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,20 +40,21 @@ class FullListController: UITableViewController, URLSessionDelegate{
         update table view cell or show overray view again.
         */
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(FullListController.didBecomeActive),
-                                               name: NSNotification.Name(rawValue: "didBecomeActiveOnFullList"),
+                                               selector: #selector(FullListController.reachabilityDidchange(_:)),
+                                               name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName),
                                                object: nil)
+        _ = reachability?.startNotifier()
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        checkReachability()
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        didBecomeActive()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -83,20 +91,28 @@ class FullListController: UITableViewController, URLSessionDelegate{
         return cell
     }
     
-    
-    func didBecomeActive(){
+    func checkReachability() {
         
-        if Reachability.connectedToNetwork() {
+        guard let r = reachability else { return }
+        
+        if r.isReachable  {
             
+            // reachable
             if unableToNetworkView != nil {
                 hideUnableToNetworkView()
             }
             clearAndReloadData()
             
-        } else if self.unableToNetworkView == nil {
+        } else {
             
             showUnableToNetworkView()
+            
         }
+        
+    }
+    
+    func reachabilityDidchange(_ notification: Notification){
+        checkReachability()
     }
     
     
@@ -128,17 +144,21 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     private func showUnableToNetworkView() {
         
-        self.unableToNetworkView = UnableToNetworkView(frame: self.view.frame)
-        self.unableToNetworkView?.center = self.view.center
-        self.tableView.separatorStyle = .none
-        self.view.addSubview((unableToNetworkView)!)
+        if self.unableToNetworkView == nil {
+            self.unableToNetworkView = UnableToNetworkView(frame: self.view.frame)
+            self.unableToNetworkView?.center = self.view.center
+            self.tableView.separatorStyle = .none
+            self.view.addSubview((unableToNetworkView)!)
+        }
     }
     
     
     private func hideUnableToNetworkView() {
-        self.unableToNetworkView!.removeFromSuperview()
-        self.unableToNetworkView = nil
-        self.tableView.separatorStyle = .singleLine
+        if self.unableToNetworkView != nil {
+            self.unableToNetworkView!.removeFromSuperview()
+            self.unableToNetworkView = nil
+            self.tableView.separatorStyle = .singleLine
+        }
     }
     
     
@@ -276,22 +296,10 @@ class FullListController: UITableViewController, URLSessionDelegate{
         
     }
     
-    
-    @objc private func refreshButtonSelected(_ sender : AnyObject) {
-        
-        if let view = unableToNetworkView {
-            view.removeFromSuperview()
-            self.unableToNetworkView = nil
-        }
-        
-        showActivityIndicatorView()
-        self.tableView.separatorStyle = .singleLine
-        viewDidAppear(false)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         
         if segue.identifier == "ShowBookInfoDetails" {
+            
             let detailViewController = segue.destination as! BookInfoDetailViewController
             
             let indexPath = self.tableView.indexPathForSelectedRow!
@@ -312,7 +320,9 @@ class FullListController: UITableViewController, URLSessionDelegate{
             if let cover = self.compactBookInfo[row].cover {
                 detailViewController.cover = cover
             }
+            
         }
+        
     }
 }
 

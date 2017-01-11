@@ -10,11 +10,12 @@ import UIKit
 
 internal class DownloadProgressButton: UIButton
 {
-    private var downloadProgressArea = CALayer()
-    private var normalArea = CALayer()
-    private var portionOfDownloadProgressArea: CGFloat = 0.0
-    private var downloadingMessage: String?
-    private var DBAreaColor: CGColor = UIColor.brown.cgColor
+    private var downloadingMessage              : String?
+    private var portionOfDownloadProgressArea   : CGFloat = 0.0
+    
+    private var downloadProgressArea            = CALayer()
+    private var normalArea                      = CALayer()
+    private var DBAreaColor                     = UIColor.brown.cgColor
     
     override func draw(_ rect: CGRect) {
         
@@ -102,6 +103,11 @@ internal class DownloadProgressButton: UIButton
      */
     internal func setMessageDuringDownload(string message: String) {
         super.titleLabel?.text = message
+    }
+    
+    internal func downloadCanceled() {
+        self.portionOfDownloadProgressArea = 0.0
+        adjustPropertiesToSublayersDuringDownload()
     }
 
 }
