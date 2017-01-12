@@ -19,21 +19,27 @@ fileprivate struct C {
 class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
                                     UITableViewDelegate, URLSessionDownloadDelegate
 {
-    private let baseURL         = "http:166.104.222.60"
-    private let cellID          = "DetailViewCell"
+    private let baseURL             = "http:166.104.222.60"
+    private let cellID              = "DetailViewCell"
+    private let cellTitleArr        = ["여는글", "목차", "편집위원소개"]
+    private let buttonTextArr       = [
+                                        "beforeDownloading" : "Download",
+                                        "afterDownloading"  : "보기"
+                                      ]
+    private let sessionID           = UUID().uuidString
     
-    private let buttonTextArr   = [
-                                    "beforeDownloading" : "Download",
-                                    "afterDownloading"  : "보기"
-                                  ]
-    private let sessionID       = UUID().uuidString
-    
-    private var cellTitleArr        = ["여는글", "목차", "편집위원소개"]
     private var bookManager         = BookManager.shared
+    private var reachability        = Reachability.shared
+
+    private var bookExists           = false
+    private var isNetworkConnected   = false
+    private var isDownloadInProgress = false
+    
     private var kRowsCount          = 0
     private var cellHeights         = [CGFloat]()
-    private var bookExists          = false
-    private var isNetworkConnected  = false
+    
+    private var downloadTask: URLSessionDownloadTask?
+    
     
     private lazy var popup: UnableToNetworkPopupView = {
         return UnableToNetworkPopupView(frame: self.view.frame)
@@ -43,6 +49,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     private lazy var confirmPopup: ConfirmMesssagePopupView = {
         return ConfirmMesssagePopupView(frame: self.view.frame)
     }()
+    
     
     // for lower stack view
     @IBOutlet weak var tableView            : UITableView!
@@ -60,10 +67,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     var titleStr            : String?
     var editorsStr          : String?
     var publicationDateStr  : String?
-    
-    private lazy var reachability: Reachability? = Reachability.shared
-    private var downloadTask: URLSessionDownloadTask?
-    private var isDownloadInProgress = false
     
     override func viewDidLoad() {
         
@@ -95,7 +98,23 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         
     }
     
-    func checkReachability() {
+    override func viewWillLayoutSubviews() {
+        
+        if bookManager.checkIfTheBookExists(with: self.titleStr!) {
+            
+            self.downloadButton.bookIsAlreadyDownloaded()
+            self.downloadButton.setTitle(buttonTextArr["afterDownloading"], for: .normal)
+            self.bookExists = true
+        }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    private func checkReachability() {
         
         guard let r = reachability else { return }
         
@@ -113,76 +132,72 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             
             // unreachable
             self.isNetworkConnected = false
-            showPopup()
+            showUnableToNetworkPopup()
         }
     }
     
-    func reachabilityDidchange(_ notification: Notification){
-        checkReachability()
-    }
-    
-    private func showPopup() {
+    private func showUnableToNetworkPopup() {
         popup.center = self.view.center
         self.view.addSubview(popup)
     }
     
-    override func viewWillLayoutSubviews() {
+    private func showConfirmPopup() {
         
-        if bookManager.checkIfTheBookExists(with: self.titleStr!) {
+        // add target action to confirm button.
+        confirmPopup.addConrimAction {
             
-            self.downloadButton.bookIsAlreadyDownloaded()
-            self.downloadButton.setTitle(buttonTextArr["afterDownloading"], for: .normal)
-            self.bookExists = true
+            if self.isDownloadInProgress {
+                
+                self.downloadTask?.cancel()
+                self.downloadTask = nil
+                
+                self.downloadButton.downloadCanceled()
+                self.isDownloadInProgress = false
+                self.downloadButton.setTitle(self.buttonTextArr["beforeDownloading"], for: .normal)
+            }
+            
+            self.confirmPopup.removeFromSuperview()
         }
+        
+        
+        // add target action to cancel button.
+        confirmPopup.addCancelAction {
+            
+            self.confirmPopup.removeFromSuperview()
+        }
+        
+        // show confirm popup view.
+        self.confirmPopup.center = self.view.center
+        self.view.addSubview(confirmPopup)
+        
+        
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
+    /**
+     When the button is clicked, there are three options.
+     
+     First, if the book shown to this view has already downloaded and saved in user document,
+     it will be opened in the epub reader.
+     
+     Second, if the book shown to this view has not downloaded yet,
+     downloading the book will start and if successfully completed,
+     the method in charge of saving the book will be called.
+     
+     Thrid, if download is in progress, confirm cancelation popup view
+     should be shown above the root view.
+     */
     @IBAction func selectedDownloadButton(_ sender: AnyObject) {
         
-        /*
-         When the button is clicked, there are two options.
-         
-         First, if the book shown to this view has already downloaded and saved in user document,
-         it will be opened in the epub reader.
-         
-         Second, if the book shown to this view has not downloaded yet,
-         downloading the book will start and if successfully completed, 
-         the method saving the book will be called.
-         */
-        
-        if isDownloadInProgress {
+        if self.isDownloadInProgress {
             
-            self.confirmPopup.center = self.view.center
+            // download is in progress.
             
-            confirmPopup.addConrimAction {
-                
-                if self.isDownloadInProgress {
-                    
-                    self.downloadTask?.cancel()
-                    self.downloadTask = nil
-                
-                    self.downloadButton.downloadCanceled()
-                    self.isDownloadInProgress = false
-                    self.downloadButton.setTitle(self.buttonTextArr["beforeDownloading"], for: .normal)
-                }
-                
-                self.confirmPopup.removeFromSuperview()
-            }
-            
-            confirmPopup.addCancelAction {
-                
-                self.confirmPopup.removeFromSuperview()
-            }
-            
-            self.view.addSubview(confirmPopup)
-            
-            
+            showConfirmPopup()
             
         } else if self.isNetworkConnected {
+            
+            // network has been connected successfully.
             
             if self.bookExists {
             
@@ -200,8 +215,14 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             } else {
             
                 // the book will be downloaded
+                
+                
+                // set manually the color of download progress area of the download button.
+                // if not set, the default color is brown.
                 self.downloadButton.setColorToDownloadProgressArea(color: UIColor.brown.cgColor)
             
+                
+                // url, session, download task
                 var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
                 title = title?.replacingOccurrences(of: "호", with: "")
             
@@ -212,6 +233,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
                 
                     let urlRequest = URLRequest(url: url)
                 
+                    // background download session.
                     let downloadSession: URLSession = {
                         let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
                         let session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
@@ -227,8 +249,9 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             
         } else {
             
-            showPopup()
+            // network is unavailable.
             
+            showUnableToNetworkPopup()
         }
     }
     
@@ -356,6 +379,11 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         }
         
         return cell
+    }
+    
+    // the status of network was just changed.
+    func reachabilityDidchange(_ notification: Notification){
+        checkReachability()
     }
 }
 

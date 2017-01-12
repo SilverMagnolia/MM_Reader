@@ -10,12 +10,19 @@ import UIKit
 
 internal class DownloadProgressButton: UIButton
 {
+    
     private var downloadingMessage              : String?
     private var portionOfDownloadProgressArea   : CGFloat = 0.0
     
     private var downloadProgressArea            = CALayer()
     private var normalArea                      = CALayer()
+    
+    /**
+     color of download progress area.
+     this property can be set by user.
+    */
     private var DBAreaColor                     = UIColor.brown.cgColor
+    
     
     override func draw(_ rect: CGRect) {
         
@@ -35,6 +42,7 @@ internal class DownloadProgressButton: UIButton
         self.layer.insertSublayer(normalArea, below: self.titleLabel?.layer)
     }
 
+    
     /**
      update portion of each areas and draw them.
     */
@@ -47,13 +55,6 @@ internal class DownloadProgressButton: UIButton
         
         downloadProgressArea.frame = slice
         normalArea.frame = remainder
-     
-        
-        if let message = self.downloadingMessage {
-            super.setTitle("\(message)", for: .normal)
-        } else {
-            super.setTitle("Downloading", for: .normal)
-        }
         
         self.layoutIfNeeded()
         
@@ -68,6 +69,13 @@ internal class DownloadProgressButton: UIButton
         return quotient
     }
     
+    
+    /**
+     the download progress area of the button should be dynamically extended.
+     parameters
+     totalBytesWritten: current downloaded bytes from the server
+     totalBytesExpectedToWrite: the total bytes of epub to be downloaded.
+    */
     internal func setPortionOfDownloadProgressArea(totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) -> Bool{
         
         // calculate percentage
@@ -80,6 +88,12 @@ internal class DownloadProgressButton: UIButton
             return false
         }
         
+        if let message = self.downloadingMessage {
+            super.setTitle("\(message)", for: .normal)
+        } else {
+            super.setTitle("Downloading", for: .normal)
+        }
+        
         self.portionOfDownloadProgressArea = portion
         adjustPropertiesToSublayersDuringDownload()
         
@@ -90,6 +104,7 @@ internal class DownloadProgressButton: UIButton
         self.portionOfDownloadProgressArea = 100
     }
     
+    
     /**
      set color to each areas
     */
@@ -97,6 +112,7 @@ internal class DownloadProgressButton: UIButton
         self.downloadProgressArea.backgroundColor = color
     }
 
+    
     /**
      set custom text on the button while downloading.
      default is "Downloading."
@@ -105,6 +121,10 @@ internal class DownloadProgressButton: UIButton
         super.titleLabel?.text = message
     }
     
+    
+    /**
+     when downloading is cancled, the button should be set to initial state.
+    */
     internal func downloadCanceled() {
         self.portionOfDownloadProgressArea = 0.0
         adjustPropertiesToSublayersDuringDownload()

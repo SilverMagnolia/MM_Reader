@@ -21,7 +21,6 @@ class UnableToNetworkPopupView: UIView {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
-        //self.layer.opacity   = 0.8
         
         setPopupView()
         setPopupLabel()
@@ -42,7 +41,6 @@ class UnableToNetworkPopupView: UIView {
         popupView.backgroundColor = UIColor.darkGray
         popupView.layer.borderWidth = 2
         popupView.layer.borderColor = UIColor.black.cgColor
-        //popupView.layer.opacity = 1.0
         
         const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0)
         self.addConstraint(const)
@@ -56,7 +54,6 @@ class UnableToNetworkPopupView: UIView {
         const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.height, multiplier: 0.5, constant: 0)
         self.addConstraint(const)
         
-        //self.layer.insertSublayer(popupView.layer, below: self.layer)
         self.addSubview(popupView)
     }
     
@@ -121,12 +118,4 @@ class UnableToNetworkPopupView: UIView {
         self.removeFromSuperview()
         
     }
-    
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
 }

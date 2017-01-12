@@ -13,6 +13,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     private let serverIP = "http://166.104.222.60"
     
+    private var isViewFilledWithCells = false
+    
     private var url                 : URL!
     private var numOfBooks          : Int!
     private var indicatorView       : ActivityIndicatorView!
@@ -91,21 +93,30 @@ class FullListController: UITableViewController, URLSessionDelegate{
         return cell
     }
     
-    func checkReachability() {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         
-        guard let r = reachability else { return }
-        
-        if r.isReachable  {
+        if segue.identifier == "ShowBookInfoDetails" {
             
-            // reachable
-            if unableToNetworkView != nil {
-                hideUnableToNetworkView()
+            let detailViewController = segue.destination as! BookInfoDetailViewController
+            
+            let indexPath = self.tableView.indexPathForSelectedRow!
+            let row = indexPath.row
+            
+            if let title = self.compactBookInfo[row].title{
+                detailViewController.titleStr = title
             }
-            clearAndReloadData()
             
-        } else {
+            if let editors = self.compactBookInfo[row].authors {
+                detailViewController.editorsStr = editors
+            }
             
-            showUnableToNetworkView()
+            if let date = self.compactBookInfo[row].publicationDate {
+                detailViewController.publicationDateStr = date
+            }
+            
+            if let cover = self.compactBookInfo[row].cover {
+                detailViewController.cover = cover
+            }
             
         }
         
@@ -115,18 +126,68 @@ class FullListController: UITableViewController, URLSessionDelegate{
         checkReachability()
     }
     
+    private func checkReachability() {
+        
+        let sema = DispatchSemaphore.init(value: 1)
+        
+        sema.wait()
+        
+        guard let r = reachability else { return }
+        
+        if r.isReachable  {
+            
+            // reachable
+            
+            if unableToNetworkView != nil {
+                hideUnableToNetworkView()
+            }
+            
+            clearAndReloadData()
+            
+            /*
+            if !isViewFilledWithCells{
+                
+                clearAndReloadData()
+                isViewFilledWithCells = true
+                
+            }*/
+            
+        } else {
+            
+            // unreachable
+            
+            showUnableToNetworkView()
+            isViewFilledWithCells = false
+            
+        }
+        
+        sema.signal()
+        
+    }
     
     private func clearAndReloadData() {
         
-        showActivityIndicatorView()
         
-        if self.compactBookInfo.count > 0 {
-            self.numOfBooks = 0
-            self.compactBookInfo.removeAll()
-            self.tableView.reloadData()
+        //showActivityIndicatorView()
+        
+        
+        if !isViewFilledWithCells{
+            
+            showActivityIndicatorView()
+            
+            if self.compactBookInfo.count > 0 {
+                
+                self.numOfBooks = 0
+                self.compactBookInfo.removeAll()
+                self.tableView.reloadData()
+                
+            }
+        
+            createCompactInformationOfBook()
+            
+            isViewFilledWithCells = true
         }
         
-        createCompactInformationOfBook()
     }
     
     
@@ -150,8 +211,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
             self.tableView.separatorStyle = .none
             self.view.addSubview((unableToNetworkView)!)
         }
+        
     }
-    
     
     private func hideUnableToNetworkView() {
         if self.unableToNetworkView != nil {
@@ -163,8 +224,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     
     private func createCompactInformationOfBook() {
-        
-        /** 이 메소드 실행 중 네트워크 에러 발생하면 원인에 따라 적절한 팝업 메시지와 에러 처리 해야 함. */
         
         var bookInfo = [[String : String]]()
         var coverImages = [[String : String]]()
@@ -293,35 +352,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
         self.numOfBooks = self.compactBookInfo.count
         self.hideActivityIndicatorView()
         self.tableView.reloadData()
-        
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        
-        if segue.identifier == "ShowBookInfoDetails" {
-            
-            let detailViewController = segue.destination as! BookInfoDetailViewController
-            
-            let indexPath = self.tableView.indexPathForSelectedRow!
-            let row = indexPath.row
-            
-            if let title = self.compactBookInfo[row].title{
-                detailViewController.titleStr = title
-            }
-            
-            if let editors = self.compactBookInfo[row].authors {
-                detailViewController.editorsStr = editors
-            }
-            
-            if let date = self.compactBookInfo[row].publicationDate {
-                detailViewController.publicationDateStr = date
-            }
-            
-            if let cover = self.compactBookInfo[row].cover {
-                detailViewController.cover = cover
-            }
-            
-        }
         
     }
 }

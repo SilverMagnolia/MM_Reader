@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import Foundation
-import FolioReaderKit
+//import Foundation
+//import FolioReaderKit
 
 class MyLibraryController: UITableViewController{
 
@@ -57,6 +57,10 @@ class MyLibraryController: UITableViewController{
         return self.compactInfoOfBooks.count
     }
 
+    override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) ->String
+    {
+        return "삭제"
+    }
     
     // view cells in table
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -68,14 +72,17 @@ class MyLibraryController: UITableViewController{
         
         // set title
         cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.title.numberOfLines = 2
         cell.title.text = self.compactInfoOfBooks[row].title
         
         // set author
-        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        cell.authors.textColor = UIColor.gray
         cell.authors.text =  self.compactInfoOfBooks[row].authors
         
         //set date
-        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        cell.publicationDate.textColor = UIColor.gray
         cell.publicationDate.text = self.compactInfoOfBooks[row].publicationDate
         
         //set cover image
@@ -146,7 +153,6 @@ class MyLibraryController: UITableViewController{
         
         alert.addAction(DeleteAction)
         alert.addAction(CancelAction)
-
         
         self.present(alert, animated: true, completion: nil)
     }

@@ -27,13 +27,5 @@ class DetailViewCell: FoldingCell {
         let durations = [0.33, 0.26, 0.26] // timing animation for each view
         return durations[itemIndex]
     }
-    
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
 }
 	
