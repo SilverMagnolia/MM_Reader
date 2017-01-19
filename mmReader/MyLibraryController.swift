@@ -71,17 +71,17 @@ class MyLibraryController: UITableViewController{
         let row = indexPath.row
         
         // set title
-        cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        cell.title.font = UIFont.systemFont(ofSize: 22)
         cell.title.numberOfLines = 2
         cell.title.text = self.compactInfoOfBooks[row].title
         
         // set author
-        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        cell.authors.font = UIFont.systemFont(ofSize: 17)
         cell.authors.textColor = UIColor.gray
         cell.authors.text =  self.compactInfoOfBooks[row].authors
         
         //set date
-        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        cell.publicationDate.font = UIFont.systemFont(ofSize: 17)
         cell.publicationDate.textColor = UIColor.gray
         cell.publicationDate.text = self.compactInfoOfBooks[row].publicationDate
         

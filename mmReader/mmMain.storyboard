@@ -28,30 +28,35 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="otZ-CV-bvM">
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="64Z-wv-9QR"/>
-                                                        <constraint firstAttribute="height" constant="110" id="siq-ee-CV1"/>
+                                                        <constraint firstAttribute="height" constant="100" id="siq-ee-CV1"/>
                                                     </constraints>
                                                 </imageView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pZd-az-fgH" userLabel="InnerStackView">
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="740" text="title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J3y-dr-CNW">
-                                                            <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="-12" translatesAutoresizingMaskIntoConstraints="NO" id="4mJ-oP-SjX">
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bip-M0-QUl">
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bip-M0-QUl">
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lno-4v-S5F">
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                             </subviews>
                                                         </stackView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mp4-Yp-jEz">
+                                                            <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                     </subviews>
                                                 </stackView>
                                             </subviews>
@@ -152,7 +157,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7l1-AM-Q7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1190" y="-43"/>
+            <point key="canvasLocation" x="1190" y="-16"/>
         </scene>
         <!--BookInfoDetailView-->
         <scene sceneID="nEg-aD-9Ig">
@@ -334,7 +339,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PWv-cS-1iP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2120.8000000000002" y="-44.527736131934034"/>
+            <point key="canvasLocation" x="2124" y="-16"/>
         </scene>
         <!--About Us-->
         <scene sceneID="BgT-lb-UWp">
@@ -353,10 +358,16 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4O0-fF-XeT">
+                            <navigationBar alpha="0.80000000000000004" contentMode="scaleToFill" barStyle="blackTranslucent" translatesAutoresizingMaskIntoConstraints="NO" id="4O0-fF-XeT">
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="WoR-h0-c8J"/>
                                 </constraints>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="barTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <textAttributes key="titleTextAttributes">
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                </textAttributes>
                                 <items>
                                     <navigationItem title="밀물" id="U7k-FT-pRC"/>
                                 </items>
@@ -371,23 +382,29 @@
                             <constraint firstItem="xhI-OX-VWt" firstAttribute="centerY" secondItem="K8v-tm-tI9" secondAttribute="centerY" id="h72-zw-GuQ"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="밀물" id="cTa-ur-PtP"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="cTa-ur-PtP"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YzN-oz-vvd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="278" y="720"/>
+            <point key="canvasLocation" x="278" y="784"/>
         </scene>
         <!--TabBarController-->
         <scene sceneID="tmI-oy-nwx">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" id="ixp-qC-Co8" userLabel="TabBarController" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" id="ixp-qC-Co8" userLabel="TabBarController" customClass="TabBarController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="FEt-qN-kV0" userLabel="TabBar">
+                    <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="FEt-qN-kV0" userLabel="TabBar" customClass="TabBar" customModule="mmReader" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
+                                <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </tabBar>
                     <connections>
+                        <outlet property="tabbar" destination="FEt-qN-kV0" id="JwR-Wp-3B0"/>
                         <segue destination="pCA-v7-fZb" kind="relationship" relationship="viewControllers" id="1KV-Ab-sDt"/>
                         <segue destination="mdU-P9-ovX" kind="relationship" relationship="viewControllers" id="gdZ-lh-9Nm"/>
                         <segue destination="c6p-OA-B45" kind="relationship" relationship="viewControllers" id="OFi-3k-5mw"/>
@@ -401,11 +418,17 @@
         <scene sceneID="J0T-Ml-E35">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="pCA-v7-fZb" userLabel="My Labrary Navigation" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="내서재" id="wxe-ML-sRv"/>
+                    <tabBarItem key="tabBarItem" selectedImage="default" systemItem="bookmarks" id="wxe-ML-sRv"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="5G9-ej-16b">
+                    <navigationBar key="navigationBar" alpha="0.80000000000000004" contentMode="scaleToFill" misplaced="YES" barStyle="black" id="5G9-ej-16b">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -416,15 +439,21 @@
             </objects>
             <point key="canvasLocation" x="279" y="-734"/>
         </scene>
-        <!--전체목록-->
+        <!--Full List Navigation-->
         <scene sceneID="Ad7-mQ-Qyy">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="전체목록" id="lPS-i3-Rcu"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" userLabel="Full List Navigation" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="downloads" id="lPS-i3-Rcu"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="FPj-ex-4Id">
+                    <navigationBar key="navigationBar" alpha="0.80000000000000004" contentMode="scaleToFill" misplaced="YES" barStyle="blackTranslucent" id="FPj-ex-4Id">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -436,5 +465,8 @@
             <point key="canvasLocation" x="278" y="-15"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="default" width="300" height="300"/>
+    </resources>
     <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
 </document>

@@ -18,9 +18,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mm_launch_image" translatesAutoresizingMaskIntoConstraints="NO" id="D5k-Az-4Ot"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mm_launch_image" translatesAutoresizingMaskIntoConstraints="NO" id="D5k-Az-4Ot">
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.90136217948717945" green="0.90136217948717945" blue="0.90136217948717945" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="D5k-Az-4Ot" secondAttribute="trailing" id="R8L-sv-tvr"/>
                             <constraint firstItem="D5k-Az-4Ot" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="U0D-tg-4lt"/>
@@ -35,6 +37,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="mm_launch_image" width="558" height="1000"/>
+        <image name="mm_launch_image" width="414" height="736"/>
     </resources>
 </document>
