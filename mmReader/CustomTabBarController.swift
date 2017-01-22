@@ -14,7 +14,7 @@ class CustomTabBarController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet var tabButtons: [UIButton]!
     
-    private var subViewControllers: [UIViewController]!
+    private var subViewControllers: [UIViewController]! = [UIViewController]()
     private var selectedIdx: Int!
     
     

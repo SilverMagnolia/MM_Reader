@@ -12,16 +12,14 @@ import UIKit
 
 class MyLibraryController: UITableViewController{
 
+    
     private var compactInfoOfBooks = [CompactInformationOfBook]()
     private let bookManager = BookManager.shared
-    
     private var cellIndexToDelete: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.compactInfoOfBooks = self.bookManager.getBookInfoInDocument()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
