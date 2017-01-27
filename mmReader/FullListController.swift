@@ -31,6 +31,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationController?.navigationBar.setCustomBackground()
+        
         self.url = URL(string: self.serverIP)
         self.numOfBooks = 0
         self.indicatorView = ActivityIndicatorView(frame: self.view.frame)
@@ -65,7 +67,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return self.numOfBooks
     }
     
@@ -75,19 +76,9 @@ class FullListController: UITableViewController, URLSessionDelegate{
         let cell = tableView.dequeueReusableCell(withIdentifier: "FullListCell", for: indexPath) as! FullListCell
         let row = indexPath.row
         
-        // set title
-        cell.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cell.title.text = self.compactBookInfo[row].title
-        
-        // set authors
-        cell.authors.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cell.authors.text = self.compactBookInfo[row].authors
-        
-        //set date
-        cell.publicationDate.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cell.publicationDate.text = self.compactBookInfo[row].publicationDate
-        
-        //set cover image
         cell.coverImage.image = self.compactBookInfo[row].cover
         
         return cell
@@ -95,7 +86,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         
-        if segue.identifier == "ShowBookInfoDetails" {
+        if segue.identifier == "ShowBookDetails" {
             
             let detailViewController = segue.destination as! BookInfoDetailViewController
             
@@ -117,9 +108,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
             if let cover = self.compactBookInfo[row].cover {
                 detailViewController.cover = cover
             }
-            
         }
-        
     }
     
     func reachabilityDidchange(_ notification: Notification){
@@ -143,14 +132,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
             }
             
             clearAndReloadData()
-            
-            /*
-            if !isViewFilledWithCells{
-                
-                clearAndReloadData()
-                isViewFilledWithCells = true
-                
-            }*/
+
             
         } else {
             
@@ -215,13 +197,13 @@ class FullListController: UITableViewController, URLSessionDelegate{
     }
     
     private func hideUnableToNetworkView() {
+        
         if self.unableToNetworkView != nil {
             self.unableToNetworkView!.removeFromSuperview()
             self.unableToNetworkView = nil
             self.tableView.separatorStyle = .singleLine
         }
     }
-    
     
     private func createCompactInformationOfBook() {
         
@@ -342,7 +324,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
             
         }) // end closure
     }
-    
     
     /**
      called when all request to server is completely responded.

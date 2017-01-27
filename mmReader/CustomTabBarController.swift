@@ -26,9 +26,9 @@ class CustomTabBarController: UIViewController {
         
         let storyboard = UIStoryboard(name: "mmMain", bundle: nil)
         
-        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "MyLibraryController"))
+        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "MyLibraryNavigationController"))
         self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "FullListNavigationController"))
-        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "InformationController"))
+        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "InformationNavigationController"))
         
         self.tabButtons[self.selectedIdx].isSelected = true
         didPressTab(self.tabButtons[self.selectedIdx])
@@ -37,8 +37,6 @@ class CustomTabBarController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
-        
     }
     
     @IBAction func didPressTab(_ sender: UIButton) {
@@ -64,17 +62,17 @@ class CustomTabBarController: UIViewController {
         selectedVC.didMove(toParentViewController: self)
         
     }
-
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
+
+extension UINavigationBar {
+    
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.width/6)
+    }
+ 
+    func setCustomBackground() {
+        self.setBackgroundImage(UIImage(named: "Navigation_background"), for: .default)
+    }
+}
+
+

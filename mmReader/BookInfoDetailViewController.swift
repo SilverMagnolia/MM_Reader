@@ -106,6 +106,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             self.downloadButton.setTitle(buttonTextArr["afterDownloading"], for: .normal)
             self.bookExists = true
         }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -159,7 +160,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             self.confirmPopup.removeFromSuperview()
         }
         
-        
         // add target action to cancel button.
         confirmPopup.addCancelAction {
             
@@ -169,8 +169,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         // show confirm popup view.
         self.confirmPopup.center = self.view.center
         self.view.addSubview(confirmPopup)
-        
-        
     }
     
     
@@ -388,6 +386,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
 }
 
 extension BookInfoDetailViewController: URLSessionDelegate {
+    
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
@@ -400,4 +399,5 @@ extension BookInfoDetailViewController: URLSessionDelegate {
             }
         }
     }
+    
 }
