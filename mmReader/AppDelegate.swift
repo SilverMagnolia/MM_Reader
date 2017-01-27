@@ -39,24 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         print("\n\napplicationDidBecomeActive")
-        /*
-        let root = self.window!.rootViewController
-        
-        if root is UITabBarController,
-            (root as! UITabBarController).selectedIndex == 1{
-            
-            // if current visible view is BookInfoDetailViewController.
-            if let secondNavigationController = (root as! UITabBarController).selectedViewController,
-                (secondNavigationController as! UINavigationController).visibleViewController is BookInfoDetailViewController
-                
-            {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "didBecomeActiveOnDetailView"), object: nil)
-                
-            }
-            
-            // if currne visible view is FullListController.
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "didBecomeActiveOnFullList"), object: nil)
-        }*/
     }
     
     func applicationWillTerminate(_ application: UIApplication) {

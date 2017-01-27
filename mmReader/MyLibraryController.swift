@@ -27,6 +27,7 @@ class MyLibraryController: UITableViewController{
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         super.viewWillAppear(animated)
        
         // if there is a new epub downloaded, then reload tableview cells.
@@ -38,7 +39,6 @@ class MyLibraryController: UITableViewController{
             
             bookManager.isTableCellReloadNeeded = false
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -72,22 +72,9 @@ class MyLibraryController: UITableViewController{
         // get the current row index of table view
         let row = indexPath.row
         
-        // set title
-        //cell.title.font = UIFont.systemFont(ofSize: 22)
-        //cell.title.numberOfLines = 2
         cell.title.text = self.compactInfoOfBooks[row].title
-        
-        // set author
-        //cell.authors.font = UIFont.systemFont(ofSize: 17)
-        //cell.authors.textColor = UIColor.gray
         cell.authors.text =  self.compactInfoOfBooks[row].authors
-        
-        //set date
-        //cell.publicationDate.font = UIFont.systemFont(ofSize: 17)
-        //cell.publicationDate.textColor = UIColor.gray
         cell.publicationDate.text = self.compactInfoOfBooks[row].publicationDate
-        
-        //set cover image
         cell.coverImage.image = self.compactInfoOfBooks[row].cover
         
         return cell

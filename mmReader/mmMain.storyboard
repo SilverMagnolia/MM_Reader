@@ -438,7 +438,7 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="aDB-AO-E92" firstAttribute="height" secondItem="6me-i1-5jS" secondAttribute="height" id="8gX-Fj-Qnr"/>
                                     <constraint firstAttribute="bottom" secondItem="aDB-AO-E92" secondAttribute="bottom" id="Foz-rp-3es"/>
@@ -465,6 +465,8 @@
                     </view>
                     <connections>
                         <outlet property="contentView" destination="Jkm-a9-QBE" id="K5c-Tr-KVf"/>
+                        <outlet property="contentViewBottomConstraint" destination="ykI-eg-jk5" id="Dkr-7z-CSN"/>
+                        <outlet property="tabBarView" destination="6me-i1-5jS" id="c1A-xs-kKd"/>
                         <outletCollection property="tabButtons" destination="fd0-in-Gnc" collectionClass="NSMutableArray" id="beN-AO-2NW"/>
                         <outletCollection property="tabButtons" destination="bHP-7i-Yva" collectionClass="NSMutableArray" id="3sX-e1-nnC"/>
                         <outletCollection property="tabButtons" destination="qV8-x8-uds" collectionClass="NSMutableArray" id="tVd-be-jfe"/>
@@ -508,8 +510,7 @@
         <!--Full List Navigation-->
         <scene sceneID="Ad7-mQ-Qyy">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FgO-Ih-gwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController storyboardIdentifier="FullListNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" userLabel="Full List Navigation" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="FullListNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" userLabel="Full List Navigation" customClass="FullListNavigationController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="downloads" id="lPS-i3-Rcu"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" clearsContextBeforeDrawing="NO" alpha="0.80000000000000004" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="FPj-ex-4Id">
@@ -527,6 +528,7 @@
                         <segue destination="EWG-Dk-PS3" kind="relationship" relationship="rootViewController" id="dH5-uH-4IU"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FgO-Ih-gwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="278" y="-15"/>
         </scene>

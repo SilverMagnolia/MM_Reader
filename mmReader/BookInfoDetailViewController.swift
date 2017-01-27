@@ -98,6 +98,11 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+    }
+    
     override func viewWillLayoutSubviews() {
         
         if bookManager.checkIfTheBookExists(with: self.titleStr!) {
