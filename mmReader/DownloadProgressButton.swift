@@ -21,7 +21,7 @@ internal class DownloadProgressButton: UIButton
      color of download progress area.
      this property can be set by user.
     */
-    private var DBAreaColor                     = UIColor.brown.cgColor
+    private var DBAreaColor                     = UIColor(red: 0.16, green: 0.21, blue: 0.33, alpha: 1).cgColor
     
     
     override func draw(_ rect: CGRect) {
@@ -91,7 +91,7 @@ internal class DownloadProgressButton: UIButton
         if let message = self.downloadingMessage {
             super.setTitle("\(message)", for: .normal)
         } else {
-            super.setTitle("Downloading", for: .normal)
+            super.setTitle("다운로드 중", for: .normal)
         }
         
         self.portionOfDownloadProgressArea = portion

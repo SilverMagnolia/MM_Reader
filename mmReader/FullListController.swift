@@ -88,7 +88,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
         
         if segue.identifier == "ShowBookDetails" {
             
-            let detailViewController = segue.destination as! BookInfoDetailViewController
+            let detailViewController = segue.destination as! BookDetailsController
             
             let indexPath = self.tableView.indexPathForSelectedRow!
             let row = indexPath.row

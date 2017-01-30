@@ -1,49 +1,40 @@
 //
-//  BookInfoDetailViewController.swift
+//  BookDetailsController.swift
 //  mmReader
 //
-//  Created by 박종호 on 2016. 12. 26..
-//  Copyright © 2016년 박종호. All rights reserved.
+//  Created by 박종호 on 2017. 1. 30..
+//  Copyright © 2017년 박종호. All rights reserved.
 //
+
 
 import UIKit
 import Alamofire
 
-fileprivate struct C {
-    struct CellHeight {
-        static let close: CGFloat = 40.0
-        static let open : CGFloat = 139.0
-    }
-}
 
-class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
-                                    UITableViewDelegate, URLSessionDownloadDelegate
+class BookDetailsController: UIViewController, UITableViewDataSource,
+    UITableViewDelegate, URLSessionDownloadDelegate
 {
     private let baseURL             = "http:166.104.222.60"
-    private let cellID              = "DetailViewCell"
-    private let cellTitleArr        = ["여는글", "목차", "편집위원소개"]
+    private let cellID              = "BookDetailsCell"
+    private let cellTitleArr        = ["여는글", "목차", "편집위원"]
     private let buttonTextArr       = [
-                                        "beforeDownloading" : "Download",
-                                        "afterDownloading"  : "보기"
-                                      ]
+        "beforeDownloading" : "다운로드",
+        "afterDownloading"  : "보기"
+    ]
     private let sessionID           = UUID().uuidString
     
     private var bookManager         = BookManager.shared
     private var reachability        = Reachability.shared
-
+    
     private var bookExists           = false
     private var isNetworkConnected   = false
     private var isDownloadInProgress = false
     
-    private var kRowsCount          = 0
-    private var cellHeights         = [CGFloat]()
-    
     private var downloadTask: URLSessionDownloadTask?
-    
     
     private lazy var popup: UnableToNetworkPopupView = {
         return UnableToNetworkPopupView(frame: self.view.frame)
-     
+        
     }()
     
     private lazy var confirmPopup: ConfirmMesssagePopupView = {
@@ -60,7 +51,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     @IBOutlet weak var titleLabel           : UILabel!
     @IBOutlet weak var editorsLabel         : UILabel!
     @IBOutlet weak var publicationDateLabel : UILabel!
-    @IBOutlet weak var emptyLabel           : UILabel!
     @IBOutlet weak var navigationBar        : UINavigationItem!
     
     var cover               : UIImage?
@@ -72,23 +62,26 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         
         super.viewDidLoad()
         
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
+        
         // fill upper subviews with text
         self.coverImageView.image       = self.cover ?? UIImage(named: "default")
         self.titleLabel.text            = self.titleStr ?? "title"
         self.navigationBar.title        = self.titleStr ?? "title"
         self.editorsLabel.text          = self.editorsStr ?? "editors"
         self.publicationDateLabel.text  = self.publicationDateStr ?? "date"
-        self.emptyLabel.text            = ""
+        
         
         self.downloadButton.setTitle(buttonTextArr["beforeDownloading"], for: .normal)
-        self.downloadButton.backgroundColor = UIColor.lightGray
+        self.downloadButton.backgroundColor = UIColor(red: 0.30, green: 0.39, blue: 0.55, alpha: 1.0)
         
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(BookInfoDetailViewController.reachabilityDidchange(_:)),
+                                               selector: #selector(BookDetailsController.reachabilityDidchange(_:)),
                                                name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName),
                                                object: nil)
         _ = reachability?.startNotifier()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -112,6 +105,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             self.bookExists = true
         }
         
+        navigationBar.backBarButtonItem = UIBarButtonItem(title: "뒤로", style: .plain, target: self, action: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -129,8 +123,6 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             // reachable
             print("connected to network")
             
-            self.kRowsCount = 3
-            createCellHeightsArray()
             self.tableView.reloadData()
             self.isNetworkConnected = true
             
@@ -203,50 +195,49 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             // network has been connected successfully.
             
             if self.bookExists {
-            
+                
                 // the book already exists.
-            
+                
                 let config = FolioReaderConfig()
-            
+                
                 config.shouldHideNavigationOnTap = true
                 config.scrollDirection = .horizontal
-            
+                
                 FolioReader.presentReader(parentViewController: self, withEpubPath: self.bookManager.getBookPath(with: self.titleStr!)
                     , andConfig: config, shouldRemoveEpub: false)
                 
-            
+                
             } else {
-            
+                
                 // the book will be downloaded
                 
                 
                 // set manually the color of download progress area of the download button.
                 // if not set, the default color is brown.
-                self.downloadButton.setColorToDownloadProgressArea(color: UIColor.brown.cgColor)
-            
+                self.downloadButton.setColorToDownloadProgressArea(color: UIColor(red: 0.16, green: 0.21, blue: 0.33, alpha: 1).cgColor)
                 
                 // url, session, download task
                 var title = self.titleStr?.replacingOccurrences(of: " ", with: "_")
                 title = title?.replacingOccurrences(of: "호", with: "")
-            
+                
                 var urlstring = self.baseURL + "/epub/"
                 urlstring = urlstring + title! + "/" + title! + ".epub"
-            
+                
                 if let url = URL(string: urlstring) {
-                
+                    
                     let urlRequest = URLRequest(url: url)
-                
+                    
                     // background download session.
                     let downloadSession: URLSession = {
                         let config = URLSessionConfiguration.background(withIdentifier: self.sessionID)
                         let session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
                         return session
                     }()
-                
+                    
                     self.downloadTask = downloadSession.downloadTask(with: urlRequest)
                     self.downloadTask?.resume()
                     self.isDownloadInProgress = true
-                
+                    
                 }// END IF
             } // END ELSE
             
@@ -277,7 +268,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
             self.isDownloadInProgress = false
             
             print("finished moving epub to sandbox")
-        
+            
         } else {
             print("failed to moving epub to sandbox")
         }
@@ -286,7 +277,7 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     
     /**
      MARK: The methods below are for table view.
-    */
+     */
     
     // Make url request for contents of folding cell
     private func makeHtmlRequestURL(row : Int) -> String? {
@@ -304,82 +295,21 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
         return url
     }
     
-    // To initiate folding cell
-    func createCellHeightsArray() {
-        for _ in 0...kRowsCount {
-            cellHeights.append(C.CellHeight.close)
-        }
-    }
-    
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    
-    //set folding cells of table view
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath.row]
-    }
-    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return kRowsCount
+        return 3
     }
-    
-    
-    // set folding cell configuration
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard case let cell as FoldingCell = tableView.cellForRow(at: indexPath) else {
-            return
-        }
-    
-        var duration = 0.0
-        if cellHeights[indexPath.row] == C.CellHeight.close { // open cell
-            cellHeights[indexPath.row] = C.CellHeight.open
-            cell.selectedAnimation(true, animated: true, completion: nil)
-            duration = 0.5
-        } else {
-            
-            // close cell
-            cellHeights[indexPath.row] = C.CellHeight.close
-            cell.selectedAnimation(false, animated: true, completion: nil)
-            duration = 1.1
-        }
-        
-        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: { _ in
-            tableView.beginUpdates()
-            tableView.endUpdates()
-        }, completion: nil)
-    }
-    
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if case let cell as FoldingCell = cell {
-            if cellHeights[indexPath.row] == C.CellHeight.close {
-                cell.selectedAnimation(false, animated: false, completion:nil)
-            } else {
-                cell.selectedAnimation(true, animated: false, completion: nil)
-            }
-        }
-    }
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! DetailViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! BookDetailsCell
+        
         let row = indexPath.row
         
-        cell.title.text = self.cellTitleArr[row]
-        
-        if let urlStr = makeHtmlRequestURL(row : row),
-            let urlInst = URL(string: urlStr) {
-            
-            let request = URLRequest(url: urlInst)
-            cell.content.loadRequest(request)
-        }
+        cell.label.text = self.cellTitleArr[row]
         
         return cell
     }
@@ -388,9 +318,40 @@ class BookInfoDetailViewController: UIViewController, UITableViewDataSource,
     func reachabilityDidchange(_ notification: Notification){
         checkReachability()
     }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "ShowBookDetailsTabBar" {
+            
+            let bookDetailsTabBarController = segue.destination as! BookDetailsCustomTabBarController
+            
+            let indexPath = self.tableView.indexPathForSelectedRow!
+            let row = indexPath.row
+            
+            // selected idx
+            bookDetailsTabBarController.selectedIdx = row
+
+            // url requests which will be loaded on webview
+            var urlRequestArr = [URLRequest]()
+            for i in 0...2 {
+                
+                if let urlStr = makeHtmlRequestURL(row: i),
+                    let urlInst = URL(string: urlStr) {
+                    
+                    let request = URLRequest(url: urlInst)
+                    urlRequestArr.append(request)
+                }
+            }
+            
+            bookDetailsTabBarController.htmlRequests = urlRequestArr
+            bookDetailsTabBarController.bookTitle = self.titleStr
+        }
+    }
 }
 
-extension BookInfoDetailViewController: URLSessionDelegate {
+
+
+extension BookDetailsController: URLSessionDelegate {
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         

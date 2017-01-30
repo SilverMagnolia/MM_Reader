@@ -17,8 +17,6 @@ class MyLibraryController: UITableViewController{
     private let bookManager = BookManager.shared
     private var cellIndexToDelete: IndexPath?
     
-    private var zzview: UIView!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.setCustomBackground()
