@@ -20,7 +20,6 @@ class CustomTabBarController: UIViewController {
     private var defaultTabBarAffineTransform: CGAffineTransform!
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,7 +30,7 @@ class CustomTabBarController: UIViewController {
         // instantiate tab bar's subviews
         self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "MyLibraryNavigationController"))
         self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "FullListNavigationController"))
-        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "InformationNavigationController"))
+        self.subViewControllers.append(storyboard.instantiateViewController(withIdentifier: "MoreNavigationController"))
         
         // set default subview
         self.tabButtons[self.selectedIdx].isSelected = true

@@ -1,20 +1,19 @@
 //
-//  InformationController.swift
+//  MoreNavigationController.swift
 //  mmReader
 //
-//  Created by 박종호 on 2017. 1. 26..
+//  Created by 박종호 on 2017. 1. 30..
 //  Copyright © 2017년 박종호. All rights reserved.
 //
 
 import UIKit
 
-class InformationController: UINavigationController {
+class MoreNavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationBar.setCustomBackground()
-        
         // Do any additional setup after loading the view.
     }
 
