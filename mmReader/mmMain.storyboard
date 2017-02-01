@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="115"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" tableViewCell="yK2-dn-PDQ" id="BDA-OK-U8s">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="114"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="114.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="DrJ-qB-wL7" userLabel="OuterStackView">
@@ -115,7 +115,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="115"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" tableViewCell="0sE-DO-gcN" id="SZe-jI-vlu">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="114"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="114.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="4Nc-Le-3cU" userLabel="OuterStackView">
@@ -207,7 +207,7 @@
                                         <rect key="frame" x="0.0" y="35" width="375" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ftT-kO-IzQ" id="fTs-fV-yCx">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="79"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="y9S-14-kjE">
@@ -228,15 +228,15 @@
                             </tableViewSection>
                             <tableViewSection id="fKc-PV-Ig1" userLabel="notification section">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NotificationCell" rowHeight="60" id="HnS-P1-x6a" userLabel="notification">
-                                        <rect key="frame" x="0.0" y="151" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="NotificationCell" rowHeight="50" id="HnS-P1-x6a" userLabel="notification">
+                                        <rect key="frame" x="0.0" y="151" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HnS-P1-x6a" id="rah-jD-nRS">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="공지사항" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EPm-ol-NrH">
-                                                    <rect key="frame" x="23" y="18.5" width="62.5" height="22"/>
+                                                    <rect key="frame" x="23" y="14" width="62.5" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -247,26 +247,29 @@
                                                 <constraint firstItem="EPm-ol-NrH" firstAttribute="centerY" secondItem="rah-jD-nRS" secondAttribute="centerY" id="Te8-s3-TIm"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="mEx-qd-nBY" kind="show" identifier="ShowNotify" id="OS4-OB-8C6"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection id="v0q-2e-S9Y" userLabel="facebook section">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" tag="1" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="FacebookCell" rowHeight="60" id="g3t-Qp-89l" userLabel="facebook">
-                                        <rect key="frame" x="0.0" y="247" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" tag="1" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="FacebookCell" rowHeight="50" id="g3t-Qp-89l" userLabel="facebook">
+                                        <rect key="frame" x="0.0" y="237" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="g3t-Qp-89l" id="H3x-CD-sqm">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="facebook" translatesAutoresizingMaskIntoConstraints="NO" id="Fho-XT-ACA">
-                                                    <rect key="frame" x="15" y="17" width="24" height="24"/>
+                                                    <rect key="frame" x="15" y="15" width="20" height="19.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="Fho-XT-ACA" secondAttribute="height" multiplier="1:1" id="oWV-SZ-Tap"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="페이스북 페이지" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RkV-hV-55F">
-                                                    <rect key="frame" x="44" y="18.5" width="114" height="22"/>
+                                                    <rect key="frame" x="40" y="14" width="114" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -285,15 +288,15 @@
                             </tableViewSection>
                             <tableViewSection id="Qcw-8Z-61r" userLabel="email section">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" tag="2" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="BugReportCell" rowHeight="60" id="rZG-0J-Yd8" userLabel="bug report">
-                                        <rect key="frame" x="0.0" y="343" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" tag="2" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="BugReportCell" rowHeight="50" id="rZG-0J-Yd8" userLabel="bug report">
+                                        <rect key="frame" x="0.0" y="323" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rZG-0J-Yd8" id="zyq-ah-ZdC">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="버그신고" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eZg-Mw-0cl">
-                                                    <rect key="frame" x="23" y="18.5" width="62.5" height="22"/>
+                                                    <rect key="frame" x="23" y="14" width="62.5" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -305,15 +308,15 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" tag="3" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="FeedbackCell" rowHeight="60" id="TFV-Qj-8ws" userLabel="feedback">
-                                        <rect key="frame" x="0.0" y="403" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" tag="3" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="FeedbackCell" rowHeight="50" id="TFV-Qj-8ws" userLabel="feedback">
+                                        <rect key="frame" x="0.0" y="373" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TFV-Qj-8ws" id="rig-Ld-r2L">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="건의사항" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0J-MF-jBc">
-                                                    <rect key="frame" x="23" y="18.5" width="62.5" height="22"/>
+                                                    <rect key="frame" x="23" y="14" width="62.5" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -325,15 +328,15 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" tag="4" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ItemReportCell" rowHeight="60" id="eSK-mw-fy6" userLabel="item report">
-                                        <rect key="frame" x="0.0" y="463" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" tag="4" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ItemReportCell" rowHeight="50" id="eSK-mw-fy6" userLabel="item report">
+                                        <rect key="frame" x="0.0" y="423" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eSK-mw-fy6" id="Fce-e2-f68">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="제보" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OGM-1L-Nul">
-                                                    <rect key="frame" x="23" y="18.5" width="31.5" height="22"/>
+                                                    <rect key="frame" x="23" y="14" width="31.5" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -349,15 +352,15 @@
                             </tableViewSection>
                             <tableViewSection id="m4C-Tl-dqM" userLabel="program information section">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" tag="5" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ProgramInformationCell" rowHeight="60" id="wbJ-LI-scz">
-                                        <rect key="frame" x="0.0" y="559" width="375" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" tag="5" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ProgramInformationCell" rowHeight="50" id="wbJ-LI-scz">
+                                        <rect key="frame" x="0.0" y="509" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wbJ-LI-scz" id="vLj-Y4-Of9">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="59"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="프로그램 정보" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ya8-eL-U73">
-                                                    <rect key="frame" x="23" y="18.5" width="98.5" height="22"/>
+                                                    <rect key="frame" x="23" y="14" width="98.5" height="22"/>
                                                     <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -368,6 +371,9 @@
                                                 <constraint firstItem="Ya8-eL-U73" firstAttribute="centerY" secondItem="vLj-Y4-Of9" secondAttribute="centerY" id="k0p-KR-MdC"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="xde-yc-YiS" kind="show" identifier="ShowProgramInformation" id="Muk-Oj-7N2"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -382,6 +388,291 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pT3-ao-ZQg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1217" y="745"/>
+        </scene>
+        <!--Notify Controller-->
+        <scene sceneID="A9a-Sc-iOo">
+            <objects>
+                <tableViewController id="mEx-qd-nBY" userLabel="Notify Controller" customClass="NotifyController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="D31-7T-Cor">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SubjectCell" id="gdh-Yk-xsP" userLabel="Subject Cell" customClass="NotifyCell" customModule="mmReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gdh-Yk-xsP" id="PsJ-5a-DVd" userLabel="Subject Cell Content">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uyu-li-1WL" userLabel="Subject Label">
+                                            <rect key="frame" x="8" y="8" width="359" height="27.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" secondItem="uyu-li-1WL" secondAttribute="trailing" id="0SL-FC-Lah"/>
+                                        <constraint firstItem="uyu-li-1WL" firstAttribute="top" secondItem="PsJ-5a-DVd" secondAttribute="topMargin" id="J4S-NV-nGR"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="uyu-li-1WL" secondAttribute="bottom" id="gcg-fE-aPg"/>
+                                        <constraint firstItem="uyu-li-1WL" firstAttribute="leading" secondItem="PsJ-5a-DVd" secondAttribute="leadingMargin" id="gtD-TJ-U0q"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="WebviewCell" id="4Lb-yk-JEY" userLabel="Webview Cell" customClass="NotifyCell" customModule="mmReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Lb-yk-JEY" id="1nJ-cb-4Fd" userLabel="Webview Cell Content">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-og-g3y" userLabel="Notify Webview">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </webView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="UKU-og-g3y" secondAttribute="bottom" id="6Xn-Fv-1l8"/>
+                                        <constraint firstAttribute="trailing" secondItem="UKU-og-g3y" secondAttribute="trailing" id="Fsr-Ne-gTR"/>
+                                        <constraint firstItem="UKU-og-g3y" firstAttribute="top" secondItem="1nJ-cb-4Fd" secondAttribute="top" id="xFq-Hg-o2T"/>
+                                        <constraint firstItem="UKU-og-g3y" firstAttribute="leading" secondItem="1nJ-cb-4Fd" secondAttribute="leading" id="y7B-Rb-7PM"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="mEx-qd-nBY" id="4vd-Jz-USi"/>
+                            <outlet property="delegate" destination="mEx-qd-nBY" id="wxp-VB-Ovj"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="공지사항" id="F4R-pw-Vvf"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WFd-Yo-LCh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2124" y="744"/>
+        </scene>
+        <!--Program Information Controller-->
+        <scene sceneID="TyM-2U-AKC">
+            <objects>
+                <viewController id="xde-yc-YiS" userLabel="Program Information Controller" customClass="ProgramInformationController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="U8t-Q0-Ufe"/>
+                        <viewControllerLayoutGuide type="bottom" id="bJw-eL-LLE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="nya-eD-SZj">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mm_launch_image" translatesAutoresizingMaskIntoConstraints="NO" id="Xxo-g4-Rym">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                            </imageView>
+                            <button opaque="NO" alpha="0.65000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wN0-o2-CEV">
+                                <rect key="frame" x="75.5" y="413.5" width="225" height="37.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="wN0-o2-CEV" secondAttribute="height" multiplier="6:1" id="Tv9-9h-ArE"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="18"/>
+                                <state key="normal" title="라이선스">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="layer.borderWidth" value="1"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="keyPath">
+                                        <color key="value" red="0.44078525641025645" green="0.44078525641025645" blue="0.44078525641025645" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="kft-yt-yrj" kind="show" id="lbj-f0-Udw"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="현재버전 1.0.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mDl-R3-HxX">
+                                <rect key="frame" x="74.5" y="318.5" width="225" height="17"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Bold" family="Apple SD Gothic Neo" pointSize="14"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.90136217949999997" green="0.90136217949999997" blue="0.90136217949999997" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Xxo-g4-Rym" secondAttribute="trailing" id="B1g-83-PXe"/>
+                            <constraint firstItem="mDl-R3-HxX" firstAttribute="centerY" secondItem="nya-eD-SZj" secondAttribute="centerY" constant="25" id="Cgp-Cr-S1e"/>
+                            <constraint firstItem="Xxo-g4-Rym" firstAttribute="top" secondItem="U8t-Q0-Ufe" secondAttribute="bottom" id="K91-eV-5os"/>
+                            <constraint firstItem="wN0-o2-CEV" firstAttribute="width" secondItem="nya-eD-SZj" secondAttribute="width" multiplier="0.6" id="Xqt-bn-QN9"/>
+                            <constraint firstItem="mDl-R3-HxX" firstAttribute="centerX" secondItem="nya-eD-SZj" secondAttribute="centerX" id="cnD-6b-6qS"/>
+                            <constraint firstItem="bJw-eL-LLE" firstAttribute="top" secondItem="wN0-o2-CEV" secondAttribute="bottom" constant="152" id="d8E-lq-wb4"/>
+                            <constraint firstItem="Xxo-g4-Rym" firstAttribute="leading" secondItem="nya-eD-SZj" secondAttribute="leading" id="iG3-dp-nAf"/>
+                            <constraint firstItem="bJw-eL-LLE" firstAttribute="top" secondItem="Xxo-g4-Rym" secondAttribute="bottom" id="pXF-7Y-8ec"/>
+                            <constraint firstItem="mDl-R3-HxX" firstAttribute="width" secondItem="wN0-o2-CEV" secondAttribute="width" id="qVG-Pp-cML"/>
+                            <constraint firstItem="wN0-o2-CEV" firstAttribute="centerX" secondItem="nya-eD-SZj" secondAttribute="centerX" id="zJB-md-qfa"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="프로그램 정보" id="Mqs-9Q-MWV"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UFk-E1-hkU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2124" y="1507"/>
+        </scene>
+        <!--라이선스-->
+        <scene sceneID="eLi-b1-gyE">
+            <objects>
+                <viewController id="kft-yt-yrj" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="HKV-Zo-QM9"/>
+                        <viewControllerLayoutGuide type="bottom" id="evP-Zg-tKW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UdO-FR-HkH">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxE-fi-JYz">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">The following third party softwares are contained in this software.
+
+====
+
+The following software is included in this application:
+FolioReader from https://github.com/FolioReader/FolioReaderKit
+
+FolioReaderKit is available under the BSD license.
+
+Copyright (c) 2015-2016, Heberti Almeida
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of FolioReaderKit nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+====
+
+The following software is included in this application:
+Alamofire from https://github.com/Alamofire/Alamofire
+
+Alamofire is released under the MIT license.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+===================
+
+The following software is included in this application:
+FMDB from https://github.com/ccgus/fmdb
+
+If you are using FMDB in your project, I'd love to hear about it.  Let Gus know
+by sending an email to gus@flyingmeat.com.
+
+And if you happen to come across either Gus Mueller or Rob Ryan in a bar, you
+might consider purchasing a drink of their choosing if FMDB has been useful to
+you.
+
+Finally, and shortly, this is the MIT License.
+
+Copyright (c) 2008-2014 Flying Meat Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+=============
+
+The following software is included in this application:
+SSZipArchive from https://github.com/ZipArchive/ZipArchive
+
+SSZipArchive is protected under the MIT license and our slightly modified version of Minizip 1.1 is licensed under the Zlib license.
+
+Copyright (c) 2010-2012 Sam Soffes
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" name="AppleSDGothicNeo-Regular" family="Apple SD Gothic Neo" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="lxE-fi-JYz" firstAttribute="leading" secondItem="UdO-FR-HkH" secondAttribute="leading" id="MUb-Xh-c1A"/>
+                            <constraint firstAttribute="trailing" secondItem="lxE-fi-JYz" secondAttribute="trailing" id="Zdw-TB-72D"/>
+                            <constraint firstItem="evP-Zg-tKW" firstAttribute="top" secondItem="lxE-fi-JYz" secondAttribute="bottom" id="hcF-1e-ONv"/>
+                            <constraint firstItem="lxE-fi-JYz" firstAttribute="top" secondItem="HKV-Zo-QM9" secondAttribute="bottom" id="rcj-Xf-4SQ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="라이선스" id="c2U-vg-8Ws"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fAr-zA-rFm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2949.5999999999999" y="1505.3973013493255"/>
         </scene>
         <!--Book Details Controller-->
         <scene sceneID="xT4-Yj-Vcm">
@@ -477,10 +768,10 @@
                                 <color key="sectionIndexBackgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="BookDetailsCell" rowHeight="73" id="uKl-C9-Yhr" customClass="BookDetailsCell" customModule="mmReader" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="73"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uKl-C9-Yhr" id="v8X-D0-Sr4">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="72"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="72.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUP-MM-sk9" userLabel="Upper Label">
@@ -702,7 +993,7 @@
                 <navigationController storyboardIdentifier="FullListNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="mdU-P9-ovX" userLabel="Full List Navigation" customClass="FullListNavigationController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="downloads" id="lPS-i3-Rcu"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" clearsContextBeforeDrawing="NO" alpha="0.80000000000000004" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="FPj-ex-4Id">
+                    <navigationBar key="navigationBar" clearsContextBeforeDrawing="NO" alpha="0.80000000000000004" contentMode="scaleToFill" translucent="NO" id="FPj-ex-4Id">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -726,7 +1017,7 @@
             <objects>
                 <navigationController storyboardIdentifier="MyLibraryNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="aph-f7-mkW" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="IqG-3P-Fs2">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="IqG-3P-Fs2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -752,7 +1043,7 @@
             <objects>
                 <navigationController storyboardIdentifier="MoreNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="hRS-v5-x7i" customClass="MoreNavigationController" customModule="mmReader" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" alpha="0.80000000000000004" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="ZFE-7l-6UO">
+                    <navigationBar key="navigationBar" alpha="0.80000000000000004" contentMode="scaleToFill" translucent="NO" id="ZFE-7l-6UO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
@@ -785,6 +1076,7 @@
         <image name="Opening_Normal" width="138" height="70"/>
         <image name="Opening_Selected" width="138" height="70"/>
         <image name="facebook" width="100" height="100"/>
+        <image name="mm_launch_image" width="414" height="736"/>
     </resources>
     <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
 </document>
