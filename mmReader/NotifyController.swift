@@ -8,88 +8,202 @@
 
 import UIKit
 
+fileprivate struct NotifyCellDescriptor {
+    
+    var isExpandable: Bool!
+    var isExpanded  : Bool!
+    var isVisible   : Bool!
+    
+    var cellID      : String!
+    var subject     : String?
+    var url         : String?
+    
+    init(cellID: String) {
+        
+        self.cellID = cellID
+        
+        switch (cellID) {
+            
+        case subjectCellID:
+            
+            self.isExpandable = true
+            self.isExpanded   = false
+            self.isVisible    = true
+            
+        case webviewCellID:
+            
+            self.isExpandable = false
+            self.isExpanded   = false
+            self.isVisible    = false
+            
+        default:
+            break
+            
+        }
+    }
+}
+
+let subjectCellID = "SubjectCell"
+let webviewCellID = "WebviewCell"
+
 class NotifyController: UITableViewController {
 
+    let urls = ["http:166.104.222.60/epub/The_Odyssey/The_Odyssey_여는글.html",
+                "http:166.104.222.60/epub/The_Odyssey/The_Odyssey_목차.html",
+                "http:166.104.222.60/epub/The_Odyssey/The_Odyssey_편집위원.html"]
+    
+    
+    private var cellDescriptors: [NotifyCellDescriptor]!
+    private var visibleRows    = [Int]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loadCellDescriptors()
+        getIndicesOfVisibleRows()
+        self.tableView.reloadData()
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
+    private func loadCellDescriptors() {
+        
+        // 넷워크를 통해 받은  [(subejct, url)] 받아서 저장해뿌자.
+        // 일단 임시로 하드코딩.
+        
+        self.cellDescriptors = [NotifyCellDescriptor]()
+        
+        for i in 0...2 {
+            
+            var subjectDescriptor = NotifyCellDescriptor(cellID: subjectCellID
+            )
+            var webviewDescriptor = NotifyCellDescriptor(cellID: webviewCellID)
+            
+            subjectDescriptor.subject = "\(i)" + ")[공지]"
+            webviewDescriptor.url = urls[i]
+            
+            self.cellDescriptors.append(subjectDescriptor)
+            self.cellDescriptors.append(webviewDescriptor)
+        }
+    }
+    
+    private func getIndicesOfVisibleRows() {
+        
+        self.visibleRows.removeAll()
+        
+        for row in 0...(cellDescriptors.count - 1) {
+            
+            if cellDescriptors[row].isVisible as Bool {
+                self.visibleRows.append(row)
+            }
+        }
+        
+    }
+    
+    private func getCellDescriptorForIndexPath(indexPath: IndexPath) -> NotifyCellDescriptor {
+        
+        let indexOfVisibleRow = self.visibleRows[indexPath.row]
+        let cellDescriptor = self.cellDescriptors[indexOfVisibleRow]
+        
+        return cellDescriptor
+    }
+    
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        
+        if cellDescriptors != nil {
+            return 1
+        } else {
+            return 0
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return self.visibleRows.count
     }
 
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        
+        let currentCellDescriptor = getCellDescriptorForIndexPath(indexPath: indexPath)
+        
+        let currentCellID = currentCellDescriptor.cellID
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: currentCellID!
+            , for: indexPath) as! NotifyCell
+        
+        switch currentCellID! {
+            
+        case subjectCellID:
+            
+            cell.subjectLabel.text = currentCellDescriptor.subject
+            
+        case webviewCellID:
+            
+            if let url = URL(string: (currentCellDescriptor.url!).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
+            {
+                cell.webview.loadRequest(URLRequest(url: url))
+            }
+            
+        default:
+            break
+        }
+        
         return cell
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let indexOfTappedRow = self.visibleRows[indexPath.row]
+        
+        if (self.cellDescriptors[indexOfTappedRow].isExpandable as Bool) {
+            
+            var shouldExpandAndShowSubRows = false
+            
+            if !(self.cellDescriptors[indexOfTappedRow].isExpanded as Bool) {
+                
+                shouldExpandAndShowSubRows = true
+            }
+            
+            self.cellDescriptors[indexOfTappedRow].isExpanded = shouldExpandAndShowSubRows
+            self.cellDescriptors[indexOfTappedRow + 1].isVisible = shouldExpandAndShowSubRows
+            
+        }
+        
+        getIndicesOfVisibleRows()
+        self.tableView.reloadData()
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        let currentCellDescriptor = getCellDescriptorForIndexPath(indexPath: indexPath)
+        
+        switch (currentCellDescriptor.cellID) {
+            
+        case subjectCellID:
+            return 60.0
+            
+        case webviewCellID:
+            return (self.tableView.bounds.height - 60.0)
+        
+        default:
+            return 44.0
+        }
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

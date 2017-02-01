@@ -10,6 +10,10 @@ import UIKit
 
 class NotifyCell: UITableViewCell {
 
+    
+    @IBOutlet weak var webview: UIWebView!
+    @IBOutlet weak var subjectLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
