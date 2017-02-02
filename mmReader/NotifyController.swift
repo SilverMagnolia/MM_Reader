@@ -43,8 +43,8 @@ fileprivate struct NotifyCellDescriptor {
     }
 }
 
-let subjectCellID = "SubjectCell"
-let webviewCellID = "WebviewCell"
+fileprivate let subjectCellID = "SubjectCell"
+fileprivate let webviewCellID = "WebviewCell"
 
 class NotifyController: UITableViewController {
 
@@ -52,9 +52,11 @@ class NotifyController: UITableViewController {
                 "http:166.104.222.60/epub/The_Odyssey/The_Odyssey_목차.html",
                 "http:166.104.222.60/epub/The_Odyssey/The_Odyssey_편집위원.html"]
     
-    
     private var cellDescriptors: [NotifyCellDescriptor]!
-    private var visibleRows    = [Int]()
+    
+    private var visibleRows         = [Int]()
+    private var isNotifyShownOnView = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,8 +83,8 @@ class NotifyController: UITableViewController {
 
     private func loadCellDescriptors() {
         
-        // 넷워크를 통해 받은  [(subejct, url)] 받아서 저장해뿌자.
         // 일단 임시로 하드코딩.
+        // 서버로부터 [["subject", "url"]] 받아서, cellDescriptors 초기화.
         
         self.cellDescriptors = [NotifyCellDescriptor]()
         
@@ -110,7 +112,6 @@ class NotifyController: UITableViewController {
                 self.visibleRows.append(row)
             }
         }
-        
     }
     
     private func getCellDescriptorForIndexPath(indexPath: IndexPath) -> NotifyCellDescriptor {
@@ -156,7 +157,8 @@ class NotifyController: UITableViewController {
             
         case webviewCellID:
             
-            if let url = URL(string: (currentCellDescriptor.url!).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
+            if let url = URL(string: (currentCellDescriptor.url!)
+                .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
             {
                 cell.webview.loadRequest(URLRequest(url: url))
             }
@@ -172,18 +174,34 @@ class NotifyController: UITableViewController {
         
         let indexOfTappedRow = self.visibleRows[indexPath.row]
         
-        if (self.cellDescriptors[indexOfTappedRow].isExpandable as Bool) {
+        if self.isNotifyShownOnView &&
+            (self.cellDescriptors[indexOfTappedRow].cellID == subjectCellID) {
             
-            var shouldExpandAndShowSubRows = false
+            // collapse the webview and show the rest of subject cells
             
-            if !(self.cellDescriptors[indexOfTappedRow].isExpanded as Bool) {
+            self.cellDescriptors[indexOfTappedRow+1].isVisible = false
+
+            for i in 0...(self.cellDescriptors.count - 1) {
                 
-                shouldExpandAndShowSubRows = true
+                if (i % 2) == 0 {
+                    self.cellDescriptors[i].isVisible = true
+                }
             }
             
-            self.cellDescriptors[indexOfTappedRow].isExpanded = shouldExpandAndShowSubRows
-            self.cellDescriptors[indexOfTappedRow + 1].isVisible = shouldExpandAndShowSubRows
+            self.isNotifyShownOnView = false
             
+        } else if !self.isNotifyShownOnView {
+            
+            // show notify.
+            
+            for i in 0...(self.cellDescriptors.count - 1) {
+                self.cellDescriptors[i].isVisible = false
+            }
+            
+            self.cellDescriptors[indexOfTappedRow].isVisible = true
+            self.cellDescriptors[indexOfTappedRow + 1].isVisible = true
+            
+            self.isNotifyShownOnView = true
         }
         
         getIndicesOfVisibleRows()
@@ -203,7 +221,7 @@ class NotifyController: UITableViewController {
             return (self.tableView.bounds.height - 60.0)
         
         default:
-            return 44.0
+            return 60.0
         }
     }
 }
