@@ -222,8 +222,9 @@ class BookDetailsController: UIViewController, UITableViewDataSource,
                 
                 var urlstring = self.baseURL + "/epub/"
                 urlstring = urlstring + title! + "/" + title! + ".epub"
+                urlstring = urlstring.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
                 
-                if let url = URL(string: urlstring) {
+                if let url = URL(string: urlstring){
                     
                     let urlRequest = URLRequest(url: url)
                     
@@ -292,6 +293,7 @@ class BookDetailsController: UIViewController, UITableViewDataSource,
         // encoding url
         url = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
         
+        //url = url.URLEncodedString()!
         return url
     }
     
@@ -348,8 +350,6 @@ class BookDetailsController: UIViewController, UITableViewDataSource,
         }
     }
 }
-
-
 
 extension BookDetailsController: URLSessionDelegate {
     

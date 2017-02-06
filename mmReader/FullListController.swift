@@ -20,7 +20,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
     private var indicatorView       : ActivityIndicatorView!
     private var compactBookInfo     : [CompactInformationOfBook]!
     private var unableToNetworkView : UIView?
-    
     private lazy var reachability: Reachability? = Reachability.shared
     
     deinit {
@@ -29,6 +28,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
     }
     
     override func viewDidLoad() {
+    
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.setCustomBackground()
@@ -49,7 +49,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
                                                object: nil)
         _ = reachability?.startNotifier()
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
