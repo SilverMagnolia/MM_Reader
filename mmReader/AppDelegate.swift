@@ -47,10 +47,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     
     
     func application(handleEventsForBackgroundURLSession
-        identifier: String, completionHandler: @escaping () -> Void) {
+        identifier: String, completionHandler: @escaping () -> Void)
+    {
         print("\nhandleEventsForBackgroundURLSession\n")
         backgroundSessionCompletionHandler = completionHandler
-    
     }
 
 

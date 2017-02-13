@@ -19,7 +19,7 @@ class FullListController: UITableViewController, URLSessionDelegate{
     private var numOfBooks          : Int!
     private var indicatorView       : ActivityIndicatorView!
     private var compactBookInfo     : [CompactInformationOfBook]!
-    private var unableToNetworkView : UIView?
+    //private var unableToNetworkView : UIView?
     private lazy var reachability: Reachability? = Reachability.shared
     
     deinit {
@@ -84,7 +84,11 @@ class FullListController: UITableViewController, URLSessionDelegate{
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         
+        print("\n\nprepare() in FullListController")
+        print("segue.destination: \(segue.destination as! BookDetailsController)\n\n")
+        
         if segue.identifier == "ShowBookDetails" {
+        
             
             let detailViewController = segue.destination as! BookDetailsController
             
@@ -94,15 +98,16 @@ class FullListController: UITableViewController, URLSessionDelegate{
             if let title = self.compactBookInfo[row].title{
                 detailViewController.titleStr = title
             }
-            
+ 
+
             if let editors = self.compactBookInfo[row].authors {
                 detailViewController.editorsStr = editors
             }
-            
+                    
             if let date = self.compactBookInfo[row].publicationDate {
                 detailViewController.publicationDateStr = date
             }
-            
+                    
             if let cover = self.compactBookInfo[row].cover {
                 detailViewController.cover = cover
             }
@@ -125,9 +130,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
             
             // reachable
             
-            if unableToNetworkView != nil {
-                hideUnableToNetworkView()
-            }
+            (navigationController as! FullListNavigationController).hideUnableToNetworkView()
+            
             
             clearAndReloadData()
 
@@ -136,9 +140,8 @@ class FullListController: UITableViewController, URLSessionDelegate{
             
             // unreachable
             
-            showUnableToNetworkView()
+            (navigationController as! FullListNavigationController).showUnableToNetworkView()
             isViewFilledWithCells = false
-            
         }
         
         sema.signal()
@@ -180,46 +183,6 @@ class FullListController: UITableViewController, URLSessionDelegate{
     private func hideActivityIndicatorView() {
         self.indicatorView.stopAnimating()
         self.indicatorView.removeFromSuperview()
-    }
-    
-    
-    private func showUnableToNetworkView() {
-        
-        if self.unableToNetworkView == nil {
-            self.unableToNetworkView = UnableToNetworkView(frame: self.tableView.frame)
-            self.unableToNetworkView?.center = self.tableView.center
-            self.tableView.separatorStyle = .none
-            self.view.addSubview((unableToNetworkView)!)
-            addConstraintsToUnableToNetworkView()
-        }
-    }
-    
-    private func addConstraintsToUnableToNetworkView() {
-        
-        self.unableToNetworkView?.translatesAutoresizingMaskIntoConstraints = false
-        
-        var constraint = NSLayoutConstraint(item: self.unableToNetworkView!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self.tableView, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        self.view.addConstraint(constraint)
-        
-        constraint = NSLayoutConstraint(item: self.unableToNetworkView!, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self.tableView, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        self.view.addConstraint(constraint)
-        
-        constraint = NSLayoutConstraint(item: self.unableToNetworkView!, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self.tableView, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
-        self.view.addConstraint(constraint)
-
-        constraint = NSLayoutConstraint(item: self.unableToNetworkView!, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self.tableView, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        self.view.addConstraint(constraint)
-
-    }
-    
-    private func hideUnableToNetworkView() {
-        
-        if self.unableToNetworkView != nil {
-            self.unableToNetworkView!.removeFromSuperview()
-            self.unableToNetworkView = nil
-            self.tableView.separatorStyle = .singleLine
-        }
-        
     }
     
     private func createCompactInformationOfBook() {

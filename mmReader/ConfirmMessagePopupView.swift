@@ -25,7 +25,7 @@ class ConfirmMesssagePopupView: UIView {
         
         super.init(frame: frame)
         
-        self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        self.backgroundColor = UIColor.white.withAlphaComponent(0.1)
         
         setPopupView()
         setPopupLabel()
@@ -42,20 +42,20 @@ class ConfirmMesssagePopupView: UIView {
         
         popupView.translatesAutoresizingMaskIntoConstraints = false
         
-        popupView.backgroundColor = UIColor.darkGray
-        popupView.layer.borderWidth = 2
+        popupView.backgroundColor = UIColor.gray
+        popupView.layer.borderWidth = 1
         popupView.layer.borderColor = UIColor.black.cgColor
         
-        const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0)
+        const = NSLayoutConstraint(item: popupView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0)
         self.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.centerY, multiplier: 1, constant: 0)
+        const = NSLayoutConstraint(item: popupView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 0.8, constant: 0)
         self.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.width, multiplier: 0.7, constant: 0)
+        const = NSLayoutConstraint(item: popupView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 0.7, constant: 0)
         self.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupView, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.height, multiplier: 0.5, constant: 0)
+        const = NSLayoutConstraint(item: popupView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 0.3, constant: 0)
         self.addConstraint(const)
         
         self.addSubview(popupView)
@@ -67,22 +67,21 @@ class ConfirmMesssagePopupView: UIView {
         
         popupLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        popupLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        popupLabel.numberOfLines = 2
+        popupLabel.numberOfLines = 3
         popupLabel.textAlignment = NSTextAlignment.center
-        popupLabel.textColor     = UIColor.black
+        popupLabel.textColor     = UIColor.darkGray
         popupLabel.text          = message
         
-        const = NSLayoutConstraint(item: popupLabel, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0)
+        const = NSLayoutConstraint(item: popupLabel, attribute: .centerX, relatedBy: .equal, toItem: popupView, attribute: .centerX, multiplier: 1, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupLabel, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.centerY, multiplier: 0.6, constant: 0)
+        const = NSLayoutConstraint(item: popupLabel, attribute: .centerY, relatedBy: .equal, toItem: popupView, attribute: .centerY, multiplier: 0.7, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupLabel, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.width, multiplier: 0.7, constant: 0)
+        const = NSLayoutConstraint(item: popupLabel, attribute: .width, relatedBy: .equal, toItem: popupView, attribute: .width, multiplier: 0.8, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: popupLabel, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.height, multiplier: 0.5, constant: 0)
+        const = NSLayoutConstraint(item: popupLabel, attribute: .height, relatedBy: .equal, toItem: popupView, attribute: .height, multiplier: 0.65, constant: 0)
         popupView.addConstraint(const)
         
         popupView.addSubview(popupLabel)
@@ -91,44 +90,48 @@ class ConfirmMesssagePopupView: UIView {
     private func setButtons() {
         
         var const: NSLayoutConstraint!
+        let backgroundColor = UIColor(red: 0.16, green: 0.21, blue: 0.33, alpha: 1)
         
         confirmButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
+        //confirmButton
         confirmButton.setTitle("확인", for: .normal)
         confirmButton.titleLabel?.textColor = UIColor.black
-        confirmButton.backgroundColor = UIColor.yellow
-        
-        const = NSLayoutConstraint(item: confirmButton, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
+        confirmButton.backgroundColor = backgroundColor
+
+        const = NSLayoutConstraint(item: confirmButton, attribute: .leading, relatedBy: .equal, toItem: popupView, attribute: .leading, multiplier: 1.5, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: confirmButton, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.bottom, multiplier: 0.7, constant: 0)
+        const = NSLayoutConstraint(item: confirmButton, attribute: .bottom, relatedBy: .equal, toItem: popupView, attribute: .bottom, multiplier: 0.95, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: confirmButton, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.width, multiplier: 0.5, constant: 0)
+        const = NSLayoutConstraint(item: confirmButton, attribute: .width, relatedBy: .equal, toItem: popupView, attribute: .width, multiplier: 0.4, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: confirmButton, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.height, multiplier: 0.3, constant: 0)
+        const = NSLayoutConstraint(item: confirmButton, attribute: .height, relatedBy: .equal, toItem: popupView, attribute: .height, multiplier: 0.3, constant: 0)
         popupView.addConstraint(const)
         
         popupView.addSubview(confirmButton)
         
         confirmButton.addTarget(self, action: #selector(handleConfirmAction(sender:)), for: .touchUpInside)
         
+        
+        // cancelButton
         cancelButton.setTitle("취소", for: .normal)
         cancelButton.titleLabel?.textColor = UIColor.black
-        cancelButton.backgroundColor = UIColor.brown
+        cancelButton.backgroundColor = backgroundColor
         
-        const = NSLayoutConstraint(item: cancelButton, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
+        const = NSLayoutConstraint(item: cancelButton, attribute: .trailing, relatedBy: .equal, toItem: popupView, attribute: .trailing, multiplier: 0.95, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: cancelButton, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.bottom, multiplier: 0.7, constant: 0)
+        const = NSLayoutConstraint(item: cancelButton, attribute: .bottom, relatedBy: .equal, toItem: popupView, attribute: .bottom, multiplier: 0.95, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: cancelButton, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.width, multiplier: 0.5, constant: 0)
+        const = NSLayoutConstraint(item: cancelButton, attribute: .width, relatedBy: .equal, toItem: popupView, attribute: .width, multiplier: 0.4, constant: 0)
         popupView.addConstraint(const)
         
-        const = NSLayoutConstraint(item: cancelButton, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: popupView, attribute: NSLayoutAttribute.height, multiplier: 0.3, constant: 0)
+        const = NSLayoutConstraint(item: cancelButton, attribute: .height, relatedBy: .equal, toItem: popupView, attribute: .height, multiplier: 0.3, constant: 0)
         popupView.addConstraint(const)
         
         cancelButton.addTarget(self, action: #selector(handleCancelAction(sender:)), for: .touchUpInside)

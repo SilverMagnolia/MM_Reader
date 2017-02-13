@@ -14,10 +14,28 @@ class MoreController: UITableViewController, MFMailComposeViewControllerDelegate
     private let facebookURL = "https://www.facebook.com/hyumilmull/?fref=ts"
     private let email       = "excelsior_87@naver.com"
     private let emailBody   = "작성된 내용은 밀물 담당자에게 전달됩니다."
+    private var isReachable: Bool!
+    
+    private lazy var reachability: Reachability? = Reachability.shared
+    private lazy var alertVC: UIAlertController = {
+        let VC = UIAlertController(title: "", message: "네트워크에 연결하십시오.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+        VC.addAction(okAction)
+        
+        return VC
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(FullListController.reachabilityDidchange(_:)),
+                                               name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName),
+                                               object: nil)
+        _ = reachability?.startNotifier()
+        
+        self.isReachable = checkReachability()
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,6 +77,13 @@ class MoreController: UITableViewController, MFMailComposeViewControllerDelegate
         
         let cellID: String! = tableView.cellForRow(at: indexPath)?.reuseIdentifier
         
+        if (cellID != "ProgramInformationCell" && !self.isReachable) {
+            
+            self.present(self.alertVC, animated: true, completion: nil)
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        
         switch (cellID) {
             
         case "NotificationCell":
@@ -71,7 +96,6 @@ class MoreController: UITableViewController, MFMailComposeViewControllerDelegate
             if !openEmail(cellID: cellID) {
                 
                 print("cannot open mail compose view.")
-                
             }
             
         case "ProgramInformationCell":
@@ -80,17 +104,22 @@ class MoreController: UITableViewController, MFMailComposeViewControllerDelegate
         default:
             break
         }
-        
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    private func checkReachability() -> Bool {
+    
+        guard let r = reachability else { return false }
         
-        if error != nil {
-            print("an error occured while sending email")
+        if r.isReachable  {
+            
+            return true
+            
+        } else {
+            
+            return false
+            
         }
-        
-        controller.dismiss(animated: true, completion: nil)
     }
     
     private func openEmail(cellID: String) -> Bool{
@@ -129,59 +158,20 @@ class MoreController: UITableViewController, MFMailComposeViewControllerDelegate
         return true
     }
     
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
+    func reachabilityDidchange(_ notification: Notification){
+        self.isReachable = checkReachability()
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        
+        if error != nil {
+            print("an error occured while sending email")
+        }
+        
+        controller.dismiss(animated: true, completion: nil)
     }
-    */
+    
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
+    
 }

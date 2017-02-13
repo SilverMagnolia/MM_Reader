@@ -50,7 +50,6 @@ class MoreNavigationController: UINavigationController, UINavigationControllerDe
         }
     }
 
-
     /*
     // MARK: - Navigation
 

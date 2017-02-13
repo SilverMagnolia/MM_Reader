@@ -48,6 +48,7 @@ internal class DownloadProgressButton: UIButton
     */
     private func adjustPropertiesToSublayersDuringDownload() {
         
+        
         self.layoutIfNeeded()
         
         let (slice, remainder) =
