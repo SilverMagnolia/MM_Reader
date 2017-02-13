@@ -21,32 +21,47 @@ class FullListNavigationController: UINavigationController, UINavigationControll
         NotificationCenter.default.addObserver(self, selector: #selector(FullListNavigationController.deleteBookDetailsInstanceCompletedToDownload(_: )), name: Notification.Name(rawValue: "deleteBookDetails"), object: nil)
     }
     
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
+    
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         
-        print("\nVC pushed into\(viewController)\n")
+        /*
+         if the VC pushed into the navigation stack was downloading epub
+         when it was popped out of stack previously, 
+         and the downloading task is still in progress 
+         when it is selected again, the instance stored in array is used, 
+         not the instance newly created.
+        */
         
         if viewController is BookDetailsController,
             let title = (viewController as! BookDetailsController).titleStr {
             
-            if let VC = checkIfCurrentVCSeguedIsInDownload(with: title) {
+            if let VCDownloadingEpub = checkIfCurrentVCSeguedIsInDownload(with: title) {
                 
-                super.pushViewController(VC, animated: true)
-                
-            } else {
-                super.pushViewController(viewController, animated: true)
+                // push the BookDetailsVC instance stored in array.
+                super.pushViewController(VCDownloadingEpub, animated: true)
+                return
             }
         }
+        
+        // push the BookDetailsVC instance newly created.
+        super.pushViewController(viewController, animated: true)
     }
+    
     
     override func popViewController(animated: Bool) -> UIViewController? {
         
+        /*
+         if the VC popped out of navigation stack is downloading epub,
+         it has to be stored in array for reuse in certain condition.
+         it will be removed from array when the download task is completed.
+        */
+        
         let VC = super.popViewController(animated: true)
-        
-        
         
         if VC is BookDetailsController {
             
@@ -56,11 +71,17 @@ class FullListNavigationController: UINavigationController, UINavigationControll
                 self.bookDetailsVCInDownloadProgress.append(VC as! BookDetailsController)
             }
         }
+        
         return VC
     }
     
+    
     func deleteBookDetailsInstanceCompletedToDownload(_ notification: Notification) {
-        
+        /*
+         an element of [bookDetailsVCInDownloadProgress] will be removed
+         when its downloading task is completed.
+         the post for this notification is sent from BookDetailsController.
+        */
         for i in 0...(self.bookDetailsVCInDownloadProgress.count - 1) {
             
             if bookDetailsVCInDownloadProgress[i].titleStr == (notification.object as! String) {
@@ -121,6 +142,10 @@ class FullListNavigationController: UINavigationController, UINavigationControll
     }
     
     private func addConstraintsToUnableToNetworkView() {
+        
+        /*
+         this method sets auto-layout to unableToNetworkView.
+        */
         
         self.unableToNetworkView?.translatesAutoresizingMaskIntoConstraints = false
         
